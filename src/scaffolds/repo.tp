@@ -1,0 +1,44 @@
+import { {{resource_sentence_case}}Dto } from "../dtos/{{resource_file_name}}.dto";
+import { {{resource_sentence_case}} } from "../entities/{{resource_file_name}}.entity";
+
+export class {{resource_sentence_case}}Repo {
+  static async create({{resource_lower_case}}: {{resource_sentence_case}}Dto): Promise<{{resource_sentence_case}}> {
+    try {
+      return {id: "", name: ""};
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  static async findAll(): Promise<{{resource_sentence_case}}[]> {
+    try {
+      return [{id: "", name: ""}];
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  static async findOne({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
+    try {
+      return {id: "", name: ""};
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  static async update({{resource_lower_case}}Id: {{resource_sentence_case}}["id"], {{resource_lower_case}}: {{resource_sentence_case}}Dto): Promise<{{resource_sentence_case}}> {
+    try {
+      return {id: "", name: ""};
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  static async remove({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
+    try {
+      return {id: "", name: ""};
+    } catch (error: any) {
+      throw error;
+    }
+  }
+}

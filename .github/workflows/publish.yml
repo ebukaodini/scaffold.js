@@ -1,0 +1,45 @@
+name: Publish to npm
+on:
+  push:
+    branches:
+      - main # Adjust this to your main branch
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: |
+          npm cache clean --force
+          rm -rf node_modules package-lock.json  
+          npm install
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git Tag
+        if: success()
+        run: |
+          git config --local user.email "ebukaodini@gmail.com"
+          git config --local user.name "Ebuka Odini"
+          TAG=$(node -p "require('./package.json').version")
+          git tag $TAG
+          git push origin $TAG

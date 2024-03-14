@@ -1,0 +1,35 @@
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { {{resource_sentence_case}} } from "../entities/{{resource_file_name}}.entity";
+
+export class {{resource_sentence_case}}Dto {
+  @IsUUID("all", { message: "Invalid ID", groups: [] })
+  id?: string;
+
+  @IsString()
+  @IsNotEmpty({ message: "Name is required", groups: ["create", "update"] })
+  name: string;
+
+  public static fromJson(data: { [key: string]: any }): {{resource_sentence_case}}Dto {
+    const {{resource_lower_case}}: {{resource_sentence_case}}Dto = new {{resource_sentence_case}}Dto();
+
+    if (data?.id) {{resource_lower_case}}.id = data.id;
+    if (data?.name) {{resource_lower_case}}.name = data.name;
+
+    return {{resource_lower_case}};
+  }
+
+  public static toJson({{resource_lower_case}}: {{resource_sentence_case}}): object {
+    if (!{{resource_lower_case}}) {
+      return;
+    }
+
+    return {
+      id: {{resource_lower_case}}.id,
+      name: {{resource_lower_case}}.name,
+    };
+  }
+
+  public static toArray({{resource_lower_case_plural}}: {{resource_sentence_case}}[]): object[] {
+    return {{resource_lower_case_plural}}.map(({{resource_lower_case}}) => this.toJson({{resource_lower_case}}));
+  }
+}

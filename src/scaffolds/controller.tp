@@ -1,0 +1,53 @@
+import { Request, Response } from "express";
+import { {{resource_sentence_case}}Repo } from "../repos/{{resource_file_name}}.repo";
+import { {{resource_sentence_case}}Dto } from "../dtos/{{resource_file_name}}.dto";
+import IResponse from "../interfaces/IResponse";
+
+export class {{resource_sentence_case}}Controller {
+  static async create{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+    try {
+      const data = {{resource_sentence_case}}Dto.fromJson(req.body);
+      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.create(data);
+      return res.success("{{resource_sentence_case}} created.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+    } catch (error: any) {
+      res.error(error.message);
+    }
+  }
+
+  static async findAll{{resource_sentence_case}}s(req: Request, res: Response): Promise<IResponse> {
+    try {
+      const {{resource_lower_case_plural}} = await {{resource_sentence_case}}Repo.findAll(); 
+      return res.success("All {{resource_lower_case_plural}}.", {{resource_sentence_case}}Dto.toArray({{resource_lower_case_plural}}));
+    } catch (error: any) {
+      res.error(error.message);
+    }
+  }
+
+  static async findOne{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+    try {
+      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.findOne(req.params.{{resource_lower_case}}Id);
+      return res.success("{{resource_sentence_case}} details.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+    } catch (error: any) {
+      res.error(error.message);
+    }
+  }
+
+  static async update{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+    try {
+      const data = {{resource_sentence_case}}Dto.fromJson(req.body);
+      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(req.params.{{resource_lower_case}}Id, data);
+      return res.success("{{resource_sentence_case}} updated.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+    } catch (error: any) {
+      res.error(error.message);
+    }
+  }
+
+  static async remove{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+    try {
+      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.remove(req.params.{{resource_lower_case}}Id);
+      return res.success("{{resource_sentence_case}} removed", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+    } catch (error: any) {
+      res.error(error.message);
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "scaffold",
+  "version": "0.0.0",
+  "description": "Speed up coding with prebuilt and custom template files",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "yes"
+  },
+  "keywords": [
+    "scaffold",
+    "scaffolder",
+    "templates",
+    "boilerplate",
+    "boilerplates",
+    "cli",
+    "bootstrap",
+    "automation",
+    "generate",
+    "generator",
+    "nodejs"
+  ],
+  "author": "Ebuka Odini <ebukaodini@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "pluralize": "^8.0.0"
+  }
+}

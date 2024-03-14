@@ -1,0 +1,4 @@
+export class {{resource_sentence_case}} {
+  id: string;
+  name: string;
+}
