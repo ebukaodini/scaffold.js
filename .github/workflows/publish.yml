@@ -31,7 +31,7 @@ jobs:
           npm install
 
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --access public --tag "require('./package.json').version"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
