@@ -35,7 +35,8 @@ jobs:
         run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
 
       - name: Publish to npm
-        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag=${{ steps.get-version.outputs.version }} --npm-token=${{ secrets.NPM_TOKEN }}
+        if: success()
+        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
