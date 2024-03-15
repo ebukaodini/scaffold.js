@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
+        tag: ["require('./package.json').version"]
 
     steps:
       - name: Checkout repository
@@ -31,18 +32,16 @@ jobs:
           npm install
 
       - name: Publish to npm
-        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag ${{ matrix.tag }} --npm-token=${{ secrets.NPM_TOKEN }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  Tag:
-    name: Tag and Release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Tag and Release
-        uses: avakar/tag-and-release@v1
-        with:
-          tag_name: "require('./package.json').version"
+      - name: Create Release
+        if: success()
+        id: create_release
+        uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ matrix.tag }}
+          release_name: Release ${{ matrix.tag }}
