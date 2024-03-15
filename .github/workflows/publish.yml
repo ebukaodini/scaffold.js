@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish:
-    name: publish
+    name: Publish
     runs-on: ubuntu-latest
 
     strategy:
@@ -35,11 +35,14 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Git Tag
-        if: success()
-        run: |
-          git config --local user.email "ebukaodini@gmail.com"
-          git config --local user.name "ebukaodini"
-          TAG=$(node -p "require('./package.json').version")
-          git tag $TAG
-          git push origin $TAG
+  Tag:
+    name: Tag and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Tag and Release
+        uses: avakar/tag-and-release@v1
+        with:
+          tag_name: "require('./package.json').version"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
