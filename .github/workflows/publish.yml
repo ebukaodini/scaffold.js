@@ -35,12 +35,9 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Release
+      - name: Bump version and push tag
         if: success()
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: laputansoft/github-tag-action@v4.6
         with:
-          tag_name: "require('./package.json').version"
-          release_name: Release "require('./package.json').version"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "require('./package.json').version"
