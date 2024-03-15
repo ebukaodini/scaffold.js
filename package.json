@@ -1,13 +1,13 @@
 {
   "name": "@ebukaodini/scaffoldjs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Speed up coding with prebuilt and custom template files",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "scaffold": "node src/index.js"
+    "scaffold": "src/index.js"
   },
   "repository": {
     "type": "git",
