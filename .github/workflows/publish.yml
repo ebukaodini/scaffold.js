@@ -29,24 +29,19 @@ jobs:
           npm cache clean --force
           rm -rf node_modules package-lock.json  
           npm install
-          echo "require('./package.json').version"
+
+      - name: Get package version
+        id: get-version
+        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
 
       - name: Publish to npm
-        id: npm-publish
-        # run: npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }}
-        run: |
-          OUTPUT=$(npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }})
-          echo "::set-output name=npm-publish-output::$OUTPUT"
+        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag ${{ steps.get-version.outputs.version }} --npm-token=${{ secrets.NPM_TOKEN }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Display npm publish output
-        run: |
-          echo "npm publish output: ${{ steps.npm-publish.outputs.npm-publish-output }}"
 
       - name: Bump version and push tag
         if: success()
         uses: laputansoft/github-tag-action@v4.6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: "require('./package.json').version"
+          tag: v${{ steps.get-version.outputs.version }}
