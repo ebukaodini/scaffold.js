@@ -209,7 +209,7 @@ class Scaffold {
       await this.scaffold("entity", context, options);
       await this.scaffold("dto", context, options);
       if (this.config.framework === "express") {
-        await this.scaffold("routes", context, options);
+        await this.scaffold("route", context, options);
         await this.scaffold("controller", context, options);
       }
       if (this.config.framework === "serverless") {
