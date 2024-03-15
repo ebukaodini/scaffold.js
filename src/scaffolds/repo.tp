@@ -34,7 +34,7 @@ export class {{resource_sentence_case}}Repo {
     }
   }
 
-  static async remove({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
+  static async delete({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
     try {
       return {id: "", name: ""};
     } catch (error: any) {
