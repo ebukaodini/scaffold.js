@@ -7,14 +7,10 @@ const chalk = require("chalk");
 
 class Scaffold {
   projectRoot = "./src";
-  //   scaffoldRoot = `./scaffolds`;
-  //   prebuiltScaffolds = `${cwd}/scaffolds`;
-
   scaffoldJsDir = path.resolve(__dirname, ".."); // Get the absolute path of the package directory
-  prebuiltScaffolds = path.join(this.scaffoldJsDir, "scaffolds");
+  prebuiltScaffolds = path.join(this.scaffoldJsDir, "src/scaffolds");
 
   constructor() {
-    console.log({ scaffoldJsDir, prebuiltScaffolds });
     console.log(chalk.yellow("\nScaffolding... 🏗️\n"));
     const command = process.argv[2];
     const resource = process.argv[3] ? process.argv[3].toLowerCase() : "";
@@ -102,7 +98,7 @@ class Scaffold {
         "utf8"
       );
       fs.writeFileSync(
-        `${projectRoot}/${pluralize.plural(command)}/${
+        `${this.projectRoot}/${pluralize.plural(command)}/${
           context.resource_file_name
         }.${command}.ts`,
         this.format(template, context)
