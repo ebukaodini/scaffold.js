@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const path = require("path");
 const pluralize = require("pluralize");
 const chalk = require("chalk");
 
 class Scaffold {
-  scaffoldRoot = "./scaffolds";
+  projectRoot = "./src";
+  //   scaffoldRoot = `./scaffolds`;
+  //   prebuiltScaffolds = `${cwd}/scaffolds`;
+
+  scaffoldJsDir = path.resolve(__dirname, ".."); // Get the absolute path of the package directory
+  prebuiltScaffolds = path.join(scaffoldJsDir, "scaffolds");
 
   constructor() {
     console.log(chalk.yellow("\nScaffolding... 🏗️\n"));
@@ -91,11 +97,11 @@ class Scaffold {
       }
 
       const template = fs.readFileSync(
-        `${this.scaffoldRoot}/${command}.tp`,
+        `${this.prebuiltScaffolds}/${command}.tp`,
         "utf8"
       );
       fs.writeFileSync(
-        `./src/${pluralize.plural(command)}/${
+        `${projectRoot}/${pluralize.plural(command)}/${
           context.resource_file_name
         }.${command}.ts`,
         this.format(template, context)
