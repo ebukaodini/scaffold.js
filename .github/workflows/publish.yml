@@ -32,7 +32,11 @@ jobs:
           echo "require('./package.json').version"
 
       - name: Publish to npm
-        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }}
+        id: npm-publish
+        # run: npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }}
+        run: |
+          OUTPUT=$(npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }})
+          echo "::set-output name=npm-publish-output::$OUTPUT"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
