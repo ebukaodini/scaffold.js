@@ -40,6 +40,10 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Display npm publish output
+        run: |
+          echo "npm publish output: ${{ steps.npm-publish.outputs.npm-publish-output }}"
+
       - name: Bump version and push tag
         if: success()
         uses: laputansoft/github-tag-action@v4.6
