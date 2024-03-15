@@ -30,9 +30,6 @@ jobs:
           rm -rf node_modules package-lock.json  
           npm install
 
-      # - name: Auth with npm registry
-      #   run: npm adduser
-
       - name: Publish to npm
         run: npm publish --access public --registry=https://registry.npmjs.org/ --tag "require('./package.json').version" --npm-token=${{ secrets.NPM_TOKEN }}
         env:
@@ -42,7 +39,7 @@ jobs:
         if: success()
         run: |
           git config --local user.email "ebukaodini@gmail.com"
-          git config --local user.name "Ebuka Odini"
+          git config --local user.name "ebukaodini"
           TAG=$(node -p "require('./package.json').version")
           git tag $TAG
           git push origin $TAG
