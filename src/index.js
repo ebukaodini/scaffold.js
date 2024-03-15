@@ -11,9 +11,10 @@ class Scaffold {
   //   prebuiltScaffolds = `${cwd}/scaffolds`;
 
   scaffoldJsDir = path.resolve(__dirname, ".."); // Get the absolute path of the package directory
-  prebuiltScaffolds = path.join(scaffoldJsDir, "scaffolds");
+  prebuiltScaffolds = path.join(this.scaffoldJsDir, "scaffolds");
 
   constructor() {
+    console.log({ scaffoldJsDir, prebuiltScaffolds });
     console.log(chalk.yellow("\nScaffolding... 🏗️\n"));
     const command = process.argv[2];
     const resource = process.argv[3] ? process.argv[3].toLowerCase() : "";
