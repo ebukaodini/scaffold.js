@@ -1,5 +1,5 @@
 {
-  "name": "scaffoldjs",
+  "name": "scaffold.js",
   "version": "0.0.1",
   "description": "Speed up coding with prebuilt and custom template files",
   "main": "src/index.js",
