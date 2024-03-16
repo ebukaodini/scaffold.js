@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
@@ -12,7 +13,7 @@ export const handler = async (
   _context: Context
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.findOne(req.params.{{resource_lower_case}}Id);
+    const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.findOne(event.pathParameters.{{resource_lower_case}}Id);
     return response.success("{{resource_sentence_case}} details.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
   } catch (error: any) {
     response.error("{{resource_sentence_case}} not found!", error.message);

@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
@@ -12,8 +13,8 @@ export const handler = async (
   _context: Context
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const data = {{resource_sentence_case}}Dto.fromJson(req.body);
-    const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(req.params.{{resource_lower_case}}Id, data);
+    const data = {{resource_sentence_case}}Dto.fromJson(JSON.parse(event.body!));
+    const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(event.pathParameters.{{resource_lower_case}}Id, data);
     return response.success("{{resource_sentence_case}} updated.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
   } catch (error: any) {
     response.error("{{resource_sentence_case}} not updated!", error.message);

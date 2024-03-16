@@ -9,6 +9,6 @@ const {{resource_lower_case}}Routes = express.Router();
 {{resource_lower_case}}Routes.get("/{{resource_lower_case_plural}}", {{resource_sentence_case}}Controller.findAll{{resource_sentence_case_plural}});
 {{resource_lower_case}}Routes.get("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", {{resource_sentence_case}}Controller.findOne{{resource_sentence_case}});
 {{resource_lower_case}}Routes.patch("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", validator({{resource_sentence_case}}Dto, "update"), {{resource_sentence_case}}Controller.update{{resource_sentence_case}});
-{{resource_lower_case}}Routes.delete("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", {{resource_sentence_case}}Controller.remove{{resource_sentence_case}});
+{{resource_lower_case}}Routes.delete("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", {{resource_sentence_case}}Controller.delete{{resource_sentence_case}});
 
 export default {{resource_lower_case}}Routes;

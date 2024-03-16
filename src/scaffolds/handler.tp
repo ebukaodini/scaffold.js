@@ -1,9 +1,10 @@
+import "reflect-metadata";
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
   Context,
 } from "aws-lambda";
-import { response } from "../../middlewares";
+import { response } from "../middlewares";
 
 export const handler = async (
   event: APIGatewayProxyEvent,
