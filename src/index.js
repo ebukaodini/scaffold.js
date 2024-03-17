@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const pluralize = require("pluralize");
 const chalk = require("chalk");
+const yaml = require("yaml");
 
 class Scaffold {
   projectRoot = "./src";
@@ -45,37 +46,36 @@ class Scaffold {
           "Invalid configuration: `framework` key must be one of express, serverless."
         );
     } catch (error) {
-      console.error(this.failure(`${error.message}\n`));
-      process.exit(1);
+      this.handleError(error);
     }
   }
 
-  async handle(command, context, options) {
+  handle(command, context, options) {
     switch (command) {
       case "help":
         this.showHelp();
         break;
 
       case "entity":
-        await this.scaffold("entity", context, options);
+        this.scaffold("entity", context, options);
         break;
       case "dto":
-        await this.scaffold("dto", context, options);
+        this.scaffold("dto", context, options);
         break;
       case "route":
-        await this.scaffold("route", context, options);
+        this.scaffold("route", context, options);
         break;
       case "controller":
-        await this.scaffold("controller", context, options);
+        this.scaffold("controller", context, options);
         break;
       case "repo":
-        await this.scaffold("repo", context, options);
+        this.scaffold("repo", context, options);
         break;
       case "handler":
-        await this.scaffold("handler", context, options);
+        this.scaffold("handler", context, options);
         break;
       case "resource":
-        await this.scaffoldResource(context, options);
+        this.scaffoldResource(context, options);
         break;
 
       default:
@@ -86,7 +86,7 @@ class Scaffold {
     console.log(this.success("\nDone!\n"));
   }
 
-  async scaffold(command, context, options) {
+  scaffold(command, context, options) {
     try {
       const _options = Array(...options);
 
@@ -144,7 +144,7 @@ class Scaffold {
     }
   }
 
-  async scaffoldHandler(subCommand, context, options) {
+  scaffoldHandler(subCommand, context, options) {
     try {
       const _options = Array(...options);
 
@@ -195,31 +195,133 @@ class Scaffold {
           `Created ${context.resource_file_name}/${subCommand}.ts ✅`
         )
       );
+
+      this.appendFunctionToServerlessFunctions(subCommand, context);
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async scaffoldResource(context, options) {
+  readServerlessFile() {
+    try {
+      let file = fs.readFileSync(`./serverless.yml`, "utf8");
+
+      let newlineCount = 0;
+      file = file.replace(/\n\n/gm, () => {
+        return `\n"newline${newlineCount++}": true\n`;
+      });
+      file = file.replace(/#(.+)(")(.+)(")/gm, "#$1`$3`");
+      file = file.replace(/#(.+)/gm, '"#$1": true');
+
+      return yaml.parse(file, {
+        logLevel: "silent",
+      });
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  appendFunctionToServerlessFunctions(subCommand, context) {
+    try {
+      const _options = Array(...options);
+
+      console.log(
+        this.info(
+          `\nAdding ${subCommand}${context.resource_sentence_case} function to serverless.yml`
+        )
+      );
+
+      if (_options.includes(`--no-function`)) {
+        console.log(
+          this.info(
+            `Skip adding ${subCommand}${context.resource_sentence_case} function to serverless.yml... (reason: --no-function option set.)`
+          )
+        );
+        return;
+      }
+
+      const subCommandMap = {
+        create: {
+          path: `/api/v1/${context.resource_lower_case_plural}`,
+          method: "post",
+        },
+        findAll: {
+          path: `/api/v1/${context.resource_lower_case_plural}`,
+          method: "get",
+        },
+        findOne: {
+          path: `/api/v1/${context.resource_lower_case_plural}/{${context.resource_lower_case}Id}`,
+          method: "get",
+        },
+        update: {
+          path: `/api/v1/${context.resource_lower_case_plural}/{${context.resource_lower_case}Id}`,
+          method: "patch",
+        },
+        delete: {
+          path: `/api/v1/${context.resource_lower_case_plural}/{${context.resource_lower_case}Id}`,
+          method: "delete",
+        },
+      };
+
+      const serverless = this.readServerlessFile();
+      const newFunction = JSON.parse(`
+      {
+        "${subCommand}${context.resource_sentence_case}":{
+          "handler":"src/handlers/${context.resource_file_name}/${subCommand}.handler",
+          "events":[{
+            "http":{
+              "path":"${subCommandMap[subCommand]["path"]}",
+              "method":"${subCommandMap[subCommand]["method"]}"
+            }
+          }]
+        }
+      }`);
+
+      serverless.functions = {
+        ...serverless.functions,
+        ...newFunction,
+      };
+
+      let serverlessString = yaml.stringify(serverless);
+      serverlessString = serverlessString.replace(
+        /\nnewline(.*): true\n/gm,
+        "\n\n"
+      );
+      serverlessString = serverlessString.replace(/"#(.+)": true/gm, "#$1");
+      serverlessString = serverlessString.replace(/`/gm, '"');
+
+      fs.writeFileSync("./serverless.yml", serverlessString);
+
+      console.log(
+        this.success(
+          `Adding ${subCommand}${context.resource_sentence_case} function to serverless.yml ✅`
+        )
+      );
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  scaffoldResource(context, options) {
     try {
       console.log(
         this.info(`Creating new resource - ${context.resource_file_name} ✨`)
       );
 
-      await this.scaffold("entity", context, options);
-      await this.scaffold("dto", context, options);
+      this.scaffold("entity", context, options);
+      this.scaffold("dto", context, options);
       if (this.config.framework === "express") {
-        await this.scaffold("route", context, options);
-        await this.scaffold("controller", context, options);
+        this.scaffold("route", context, options);
+        this.scaffold("controller", context, options);
       }
       if (this.config.framework === "serverless") {
-        await this.scaffoldHandler("create", context, options);
-        await this.scaffoldHandler("findAll", context, options);
-        await this.scaffoldHandler("findOne", context, options);
-        await this.scaffoldHandler("update", context, options);
-        await this.scaffoldHandler("delete", context, options);
+        this.scaffoldHandler("create", context, options);
+        this.scaffoldHandler("findAll", context, options);
+        this.scaffoldHandler("findOne", context, options);
+        this.scaffoldHandler("update", context, options);
+        this.scaffoldHandler("delete", context, options);
       }
-      await this.scaffold("repo", context, options);
+      this.scaffold("repo", context, options);
     } catch (error) {
       this.handleError(error);
     }
@@ -307,6 +409,9 @@ class Scaffold {
       \t--no-delete-handler\t${this.muted(
         "don't create a resource/delete handler for the resource."
       )}
+      \t--no-function\t\t${this.muted(
+        "don't create a serverless function for the resource handler."
+      )}
       \t--no-repo\t\t${this.muted("don't create a repo for the resource.")}
       `);
     }
@@ -361,7 +466,7 @@ class Scaffold {
   }
 
   handleError(error) {
-    console.error(this.failure(error.message), error.code);
+    console.error(this.failure(`${error.message}\n`), error.code);
     process.exit(1);
   }
 
