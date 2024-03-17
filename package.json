@@ -1,6 +1,6 @@
 {
   "name": "@ebukaodini/scaffoldjs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Speed up coding with prebuilt and custom template files",
   "main": "src/index.js",
   "scripts": {
