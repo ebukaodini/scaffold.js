@@ -40,13 +40,6 @@ jobs:
       #   env:
       #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Setup Git
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@users.noreply.github.com"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
       - name: Extract version
         # if: steps.publish_to_npm.outcome == 'success'
         id: extract_version
