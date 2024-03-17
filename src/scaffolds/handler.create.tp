@@ -10,7 +10,7 @@ import { {{resource_sentence_case}}Repo } from "../../repos/{{resource_file_name
 import { Middleware } from "../../services/middleware";
 
 export const handler = Middleware.use(
-  [validator({{resource_sentence_case}}Dto, "update")],
+  [validator({{resource_sentence_case}}Dto, "create")],
   async (
     event: APIGatewayProxyEvent,
     _context: Context
