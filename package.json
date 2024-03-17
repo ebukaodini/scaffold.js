@@ -1,6 +1,6 @@
 {
   "name": "@ebukaodini/scaffoldjs",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Speed up coding with prebuilt and custom template files",
   "main": "src/index.js",
   "scripts": {
@@ -24,7 +24,8 @@
     "automation",
     "generate",
     "generator",
-    "nodejs"
+    "nodejs",
+    "low-code"
   ],
   "author": "Ebuka Odini <ebukaodini@gmail.com>",
   "license": "ISC",
