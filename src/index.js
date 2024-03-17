@@ -315,7 +315,10 @@ class Scaffold {
         this.scaffold("controller", context, options);
       }
       if (this.config.framework === "serverless") {
-        fs.mkdir(`${this.projectRoot}/handlers/${context.resource_file_name}`);
+        fs.mkdir(
+          `${this.projectRoot}/handlers/${context.resource_file_name}`,
+          () => {}
+        );
         this.scaffoldHandler("create", context, options);
         this.scaffoldHandler("findAll", context, options);
         this.scaffoldHandler("findOne", context, options);
@@ -467,7 +470,9 @@ class Scaffold {
   }
 
   handleError(error) {
-    console.error(this.failure(`${error.message}\n`), error.code);
+    console.error(
+      this.failure(`\n${error.code ?? "Error"}: ${error.message} 🚨\n`)
+    );
     process.exit(1);
   }
 
