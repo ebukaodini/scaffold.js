@@ -4,19 +4,23 @@ import {
   APIGatewayProxyResult,
   Context,
 } from "aws-lambda";
-import { response } from "../../middlewares";
+import { response, validator } from "../../middlewares";
 import { {{resource_sentence_case}}Dto } from "../../dtos/{{resource_file_name}}.dto";
 import { {{resource_sentence_case}}Repo } from "../../repos/{{resource_file_name}}.repo";
+import { Middleware } from "../../services/middleware";
 
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  _context: Context
-): Promise<APIGatewayProxyResult> => {
-  try {
-    const data = {{resource_sentence_case}}Dto.fromJson(JSON.parse(event.body!));
-    const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(event.pathParameters.{{resource_lower_case}}Id, data);
-    return response.success("{{resource_sentence_case}} updated.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
-  } catch (error: any) {
-    response.error("{{resource_sentence_case}} not updated!", error.message);
+export const handler = Middleware.use(
+  [validator({{resource_sentence_case}}Dto, "update")],
+  async (
+    event: APIGatewayProxyEvent,
+    _context: Context
+  ): Promise<APIGatewayProxyResult> => {
+    try {
+      const data = {{resource_sentence_case}}Dto.fromJson(JSON.parse(event.body!));
+      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(event.pathParameters.{{resource_lower_case}}Id, data);
+      return response.success("{{resource_sentence_case}} updated.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+    } catch (error: any) {
+      return response.error("{{resource_sentence_case}} not updated!", error.message);
+    }
   }
-};
+);

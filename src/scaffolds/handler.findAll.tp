@@ -16,6 +16,6 @@ export const handler = async (
     const {{resource_lower_case_plural}} = await {{resource_sentence_case}}Repo.findAll(); 
     return response.success("All {{resource_lower_case_plural}}.", {{resource_sentence_case}}Dto.toArray({{resource_lower_case_plural}}));
   } catch (error: any) {
-    response.error("{{resource_sentence_case}}s not found!", error.message);
+    return response.error("{{resource_sentence_case}}s not found!", error.message);
   }
 };

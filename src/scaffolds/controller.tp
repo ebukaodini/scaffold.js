@@ -10,7 +10,7 @@ export class {{resource_sentence_case}}Controller {
       const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.create(data);
       return res.success("{{resource_sentence_case}} created.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
     } catch (error: any) {
-      res.error("{{resource_sentence_case}} not created!", error.message);
+      return res.error("{{resource_sentence_case}} not created!", error.message);
     }
   }
 
@@ -19,7 +19,7 @@ export class {{resource_sentence_case}}Controller {
       const {{resource_lower_case_plural}} = await {{resource_sentence_case}}Repo.findAll(); 
       return res.success("All {{resource_lower_case_plural}}.", {{resource_sentence_case}}Dto.toArray({{resource_lower_case_plural}}));
     } catch (error: any) {
-      res.error("{{resource_sentence_case}}s not found!", error.message);
+      return res.error("{{resource_sentence_case}}s not found!", error.message);
     }
   }
 
@@ -28,7 +28,7 @@ export class {{resource_sentence_case}}Controller {
       const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.findOne(req.params.{{resource_lower_case}}Id);
       return res.success("{{resource_sentence_case}} details.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
     } catch (error: any) {
-      res.error("{{resource_sentence_case}} not found!", error.message);
+      return res.error("{{resource_sentence_case}} not found!", error.message);
     }
   }
 
@@ -38,7 +38,7 @@ export class {{resource_sentence_case}}Controller {
       const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(req.params.{{resource_lower_case}}Id, data);
       return res.success("{{resource_sentence_case}} updated.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
     } catch (error: any) {
-      res.error("{{resource_sentence_case}} not updated!", error.message);
+      return res.error("{{resource_sentence_case}} not updated!", error.message);
     }
   }
 
@@ -47,7 +47,7 @@ export class {{resource_sentence_case}}Controller {
       const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.delete(req.params.{{resource_lower_case}}Id);
       return res.success("{{resource_sentence_case}} deleted.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
     } catch (error: any) {
-      res.error("{{resource_sentence_case}} not deleted!", error.message);
+      return res.error("{{resource_sentence_case}} not deleted!", error.message);
     }
   }
 }

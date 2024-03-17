@@ -16,6 +16,6 @@ export const handler = async (
     const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.delete(event.pathParameters.{{resource_lower_case}}Id);
     return response.success("{{resource_sentence_case}} deleted.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
   } catch (error: any) {
-    response.error("{{resource_sentence_case}} not deleted!", error.message);
+    return response.error("{{resource_sentence_case}} not deleted!", error.message);
   }
 };

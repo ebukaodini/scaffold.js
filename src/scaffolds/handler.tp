@@ -13,6 +13,6 @@ export const handler = async (
   try {
     return response.success("Success!");
   } catch (error: any) {
-    response.error("Error!", error.message);
+    return response.error("Error!", error.message);
   }
 };
