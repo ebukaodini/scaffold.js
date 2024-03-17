@@ -315,6 +315,7 @@ class Scaffold {
         this.scaffold("controller", context, options);
       }
       if (this.config.framework === "serverless") {
+        fs.mkdir(`${this.projectRoot}/handlers/${context.resource_file_name}`);
         this.scaffoldHandler("create", context, options);
         this.scaffoldHandler("findAll", context, options);
         this.scaffoldHandler("findOne", context, options);
