@@ -196,7 +196,7 @@ class Scaffold {
         )
       );
 
-      this.appendFunctionToServerlessFunctions(subCommand, context);
+      this.appendFunctionToServerlessFunctions(subCommand, context, options);
     } catch (error) {
       this.handleError(error);
     }
@@ -221,7 +221,7 @@ class Scaffold {
     }
   }
 
-  appendFunctionToServerlessFunctions(subCommand, context) {
+  appendFunctionToServerlessFunctions(subCommand, context, options) {
     try {
       const _options = Array(...options);
 
