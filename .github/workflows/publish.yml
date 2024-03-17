@@ -48,7 +48,7 @@ jobs:
           git config --global user.name "Ebuka Odini"
           git config --global user.email "ebukaodini@gmail.com"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Extract version
         # if: steps.publish_to_npm.outcome == 'success'
