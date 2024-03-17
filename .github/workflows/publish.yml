@@ -40,13 +40,10 @@ jobs:
       #   env:
       #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # git tag v0.3.2
-      # git push origin v0.3.2
-
       - name: Setup Git
         run: |
-          git config --global user.name "Ebuka Odini"
-          git config --global user.email "ebukaodini@gmail.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
@@ -55,19 +52,9 @@ jobs:
         id: extract_version
         uses: Saionaro/extract-package-version@v1.2.1
 
-      - name: Create tag
-        # if: steps.publish_to_npm.outcome == 'success'
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: "v${{ steps.extract_version.outputs.version }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create release
-        # if: steps.publish_to_npm.outcome == 'success'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: "v${{ steps.extract_version.outputs.version }}"
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create and Release Tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag ${{ steps.extract_version.outputs.version }}
+          git push origin ${{ steps.extract_version.outputs.version }}
