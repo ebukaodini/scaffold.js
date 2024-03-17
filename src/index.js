@@ -485,7 +485,7 @@ class Scaffold {
       .join("");
 
     return {
-      resource_file_name: resource,
+      resource_file_name: pluralize.singular(resource),
       resource_lower_case: pluralize.singular(_resource),
       resource_sentence_case: this.toSentenceCase(
         pluralize.singular(_resource)
