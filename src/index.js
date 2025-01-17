@@ -71,6 +71,12 @@ class Scaffold {
       case "repo":
         this.scaffold("repo", context, options);
         break;
+      case "model":
+        this.appendModelToPrismaSchema(context);
+        break;
+      case "test":
+        this.scaffold("test", context, options);
+        break;
       case "handler":
         this.scaffold("handler", context, options);
         break;
@@ -129,12 +135,20 @@ class Scaffold {
         `${this.prebuiltScaffolds}/${command}.tp`,
         "utf8"
       );
-      fs.writeFileSync(
-        `${this.projectRoot}/${pluralize.plural(command)}/${
-          context.resource_file_name
-        }.${command}.ts`,
-        this.format(template, context)
-      );
+
+      if (command === "test") {
+        fs.writeFileSync(
+          `${this.projectRoot}/__tests__/unit/${context.resource_file_name}.${command}.ts`,
+          this.format(template, context)
+        );
+      } else {
+        fs.writeFileSync(
+          `${this.projectRoot}/${pluralize.plural(command)}/${
+            context.resource_file_name
+          }.${command}.ts`,
+          this.format(template, context)
+        );
+      }
 
       console.log(
         this.success(`Created ${context.resource_file_name}.${command}.ts ✅`)
@@ -221,6 +235,14 @@ class Scaffold {
     }
   }
 
+  readPrismaSchemaFile() {
+    try {
+      return fs.readFileSync(`./prisma/schema.prisma`, "utf8");
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   appendFunctionToServerlessFunctions(subCommand, context, options) {
     try {
       const _options = Array(...options);
@@ -302,6 +324,29 @@ class Scaffold {
     }
   }
 
+  appendModelToPrismaSchema(context) {
+    try {
+      console.log(
+        this.info(
+          `\nAdding ${context.resource_sentence_case_plural} model to schema.prisma`
+        )
+      );
+
+      const schema = this.readPrismaSchemaFile();
+      const model = `model ${context.resource_sentence_case_plural} {\n  id   Int    @id @default(autoincrement())\n  name String @map("name")\n\n  @@map("${context.resource_lower_case_plural}")\n}\n`;
+
+      fs.writeFileSync("./prisma/schema.prisma", schema.concat(model));
+
+      console.log(
+        this.success(
+          `Adding ${context.resource_sentence_case_plural} model to schema.prisma ✅`
+        )
+      );
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   scaffoldResource(context, options) {
     try {
       console.log(
@@ -326,6 +371,8 @@ class Scaffold {
         this.scaffoldHandler("delete", context, options);
       }
       this.scaffold("repo", context, options);
+      this.appendModelToPrismaSchema(context);
+      this.scaffold("test", context, options);
     } catch (error) {
       this.handleError(error);
     }
@@ -346,13 +393,14 @@ class Scaffold {
       
       available commands:
       \tresource\t\t${this.muted(
-        "creates a new resource with entity, dto, routes, controller and repo."
+        "creates a new resource with entity, dto, routes, controller, repo and unit test."
       )}
       \tentity\t\t\t${this.muted("creates a resource entity only.")}
       \tdto\t\t\t${this.muted("creates a resource dto only.")}
       \troute\t\t\t${this.muted("creates a resource routes only.")}
       \tcontroller\t\t${this.muted("creates a resource controller only.")}
       \trepo\t\t\t${this.muted("creates a resource repo only.")}
+      \ttest\t\t\t${this.muted("creates a resource unit test only.")}
       \thelp\t\t\t${this.muted("shows this help.")}
   
       resource e.g:
@@ -370,6 +418,7 @@ class Scaffold {
         "don't create a controller for the resource."
       )}
       \t--no-repo\t\t${this.muted("don't create a repo for the resource.")}
+      \t--no-test\t\t${this.muted("don't create unit test for the resource.")}
       `);
     }
 

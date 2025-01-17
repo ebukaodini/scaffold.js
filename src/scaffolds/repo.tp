@@ -1,10 +1,13 @@
 import { {{resource_sentence_case}}Dto } from "../dtos/{{resource_file_name}}.dto";
 import { {{resource_sentence_case}} } from "../entities/{{resource_file_name}}.entity";
+import { connectDb } from "../services/db";
 
 export class {{resource_sentence_case}}Repo {
+  static db = connectDb();
+
   static async create({{resource_lower_case}}: {{resource_sentence_case}}Dto): Promise<{{resource_sentence_case}}> {
     try {
-      return {id: "", name: ""};
+      return await this.db.{{resource_lower_case_plural}}.create({ data: {{resource_lower_case}} });
     } catch (error: any) {
       throw error;
     }
@@ -12,7 +15,7 @@ export class {{resource_sentence_case}}Repo {
 
   static async findAll(): Promise<{{resource_sentence_case}}[]> {
     try {
-      return [{id: "", name: ""}];
+      return await this.db.{{resource_lower_case_plural}}.findMany();
     } catch (error: any) {
       throw error;
     }
@@ -20,7 +23,7 @@ export class {{resource_sentence_case}}Repo {
 
   static async findOne({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
     try {
-      return {id: "", name: ""};
+      return await this.db.{{resource_lower_case_plural}}.findUnique({ where: { id: {{resource_lower_case}}Id } });
     } catch (error: any) {
       throw error;
     }
@@ -28,7 +31,7 @@ export class {{resource_sentence_case}}Repo {
 
   static async update({{resource_lower_case}}Id: {{resource_sentence_case}}["id"], {{resource_lower_case}}: {{resource_sentence_case}}Dto): Promise<{{resource_sentence_case}}> {
     try {
-      return {id: "", name: ""};
+      return await this.db.{{resource_lower_case_plural}}.update({ data: {{resource_lower_case}}, where: { id: {{resource_lower_case}}Id } });
     } catch (error: any) {
       throw error;
     }
@@ -36,7 +39,7 @@ export class {{resource_sentence_case}}Repo {
 
   static async delete({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
     try {
-      return {id: "", name: ""};
+      return await this.db.{{resource_lower_case_plural}}.delete({ where: { id: {{resource_lower_case}}Id } });
     } catch (error: any) {
       throw error;
     }
