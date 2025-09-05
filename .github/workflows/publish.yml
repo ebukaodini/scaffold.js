@@ -41,26 +41,12 @@ jobs:
         id: publish_to_npm
         run: npm publish --access public --registry=https://registry.npmjs.org/ --tag latest --npm-token=${{ secrets.NPM_TOKEN }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Push changelog update
-        if: steps.publish_to_npm.outcome == 'success'
-        run: git push origin HEAD:main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Extract version
         if: steps.publish_to_npm.outcome == 'success'
         id: extract_version
         uses: Saionaro/extract-package-version@v1.2.1
-
-      - name: Create tag
-        if: steps.publish_to_npm.outcome == 'success'
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: v${{ steps.extract_version.outputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Changelog
         if: steps.publish_to_npm.outcome == 'success'
@@ -84,16 +70,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Create release
-      #   if: steps.publish_to_npm.outcome == 'success'
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     tag_name: v${{ steps.extract_version.outputs.version }}
-      #     generate_release_notes: true
-      #     body: |
-      #       ## What's Changed
-      #       See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+      - name: Create tag
+        if: steps.publish_to_npm.outcome == 'success'
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: v${{ steps.extract_version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      #       **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.after }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release
+        if: steps.publish_to_npm.outcome == 'success'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.extract_version.outputs.version }}
+          generate_release_notes: true
+          body: |
+            ## What's Changed
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.after }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
