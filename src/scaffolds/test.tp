@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import { createDbMock, MockContext } from "../config";
-import { {{resource_sentence_case}}Repo } from "../../repos/{{resource_file_name}}.repo";
+import { {{resource.singular.pascalCase}}Repo } from "../../repos/{{resource.singular.lowerCase}}.repo";
 
 let mockDb: MockContext["prisma"];
 
@@ -9,53 +9,53 @@ beforeEach(() => {
   mockDb = createDbMock().prisma;
 });
 
-const random{{resource_sentence_case}} = () => {
+const random{{resource.singular.pascalCase}} = () => {
   return {
     id: faker.number.int(),
     name: faker.word.words(1),
   };
 };
 
-describe("{{resource_sentence_case}} Repo", () => {
-  test("should create new {{resource_lower_case}}", async () => {
-    const {{resource_lower_case}} = random{{resource_sentence_case}}();
-    mockDb.{{resource_lower_case_plural}}.create.mockResolvedValue({{resource_lower_case}});
+describe("{{resource.singular.pascalCase}} Repo", () => {
+  test("should create new {{resource.singular.lowerCase.spaceCase}}", async () => {
+    const {{resource.singular.camelCase}} = random{{resource.singular.pascalCase}}();
+    mockDb.{{resource.singular.camelCase}}.create.mockResolvedValue({{resource.singular.camelCase}});
 
-    {{resource_sentence_case}}Repo.db = mockDb;
-    await expect({{resource_sentence_case}}Repo.create({{resource_lower_case}})).resolves.toEqual({{resource_lower_case}});
+    {{resource.singular.pascalCase}}Repo.db = mockDb;
+    await expect({{resource.singular.pascalCase}}Repo.create({{resource.singular.camelCase}})).resolves.toEqual({{resource.singular.camelCase}});
   });
 
-  test("should get all {{resource_lower_case_plural}}", async () => {
-    const {{resource_lower_case_plural}} = faker.helpers.multiple(random{{resource_sentence_case}}, {
+  test("should get all {{resource.plural.lowerCase.spaceCase}}", async () => {
+    const {{resource.plural.camelCase}} = faker.helpers.multiple(random{{resource.singular.pascalCase}}, {
       count: 5,
     });
-    mockDb.{{resource_lower_case_plural}}.findMany.mockResolvedValue({{resource_lower_case_plural}});
+    mockDb.{{resource.singular.camelCase}}.findMany.mockResolvedValue({{resource.plural.camelCase}});
 
-    {{resource_sentence_case}}Repo.db = mockDb;
-    await expect({{resource_sentence_case}}Repo.findAll()).resolves.toEqual({{resource_lower_case_plural}});
+    {{resource.singular.pascalCase}}Repo.db = mockDb;
+    await expect({{resource.singular.pascalCase}}Repo.findAll()).resolves.toEqual({{resource.plural.camelCase}});
   });
 
-  test("should get one {{resource_lower_case}}", async () => {
-    const {{resource_lower_case}} = random{{resource_sentence_case}}();
-    mockDb.{{resource_lower_case_plural}}.findUnique.mockResolvedValue({{resource_lower_case}});
+  test("should get one {{resource.singular.lowerCase.spaceCase}}", async () => {
+    const {{resource.singular.camelCase}} = random{{resource.singular.pascalCase}}();
+    mockDb.{{resource.singular.camelCase}}.findUnique.mockResolvedValue({{resource.singular.camelCase}});
 
-    {{resource_sentence_case}}Repo.db = mockDb;
-    await expect({{resource_sentence_case}}Repo.findOne({{resource_lower_case}}.id)).resolves.toEqual({{resource_lower_case}});
+    {{resource.singular.pascalCase}}Repo.db = mockDb;
+    await expect({{resource.singular.pascalCase}}Repo.findOne({{resource.singular.camelCase}}.id)).resolves.toEqual({{resource.singular.camelCase}});
   });
 
-  test("should update one {{resource_lower_case}}", async () => {
-    const {{resource_lower_case}} = random{{resource_sentence_case}}();
-    mockDb.{{resource_lower_case_plural}}.update.mockResolvedValue({{resource_lower_case}});
+  test("should update one {{resource.singular.lowerCase.spaceCase}}", async () => {
+    const {{resource.singular.camelCase}} = random{{resource.singular.pascalCase}}();
+    mockDb.{{resource.singular.camelCase}}.update.mockResolvedValue({{resource.singular.camelCase}});
 
-    {{resource_sentence_case}}Repo.db = mockDb;
-    await expect({{resource_sentence_case}}Repo.update({{resource_lower_case}}.id, {{resource_lower_case}})).resolves.toEqual({{resource_lower_case}});
+    {{resource.singular.pascalCase}}Repo.db = mockDb;
+    await expect({{resource.singular.pascalCase}}Repo.update({{resource.singular.camelCase}}.id, {{resource.singular.camelCase}})).resolves.toEqual({{resource.singular.camelCase}});
   });
 
-  test("should delete one {{resource_lower_case}}", async () => {
-    const {{resource_lower_case}} = random{{resource_sentence_case}}();
-    mockDb.{{resource_lower_case_plural}}.delete.mockResolvedValue({{resource_lower_case}});
+  test("should delete one {{resource.singular.lowerCase.spaceCase}}", async () => {
+    const {{resource.singular.camelCase}} = random{{resource.singular.pascalCase}}();
+    mockDb.{{resource.singular.camelCase}}.delete.mockResolvedValue({{resource.singular.camelCase}});
 
-    {{resource_sentence_case}}Repo.db = mockDb;
-    await expect({{resource_sentence_case}}Repo.delete({{resource_lower_case}}.id)).resolves.toEqual({{resource_lower_case}});
+    {{resource.singular.pascalCase}}Repo.db = mockDb;
+    await expect({{resource.singular.pascalCase}}Repo.delete({{resource.singular.camelCase}}.id)).resolves.toEqual({{resource.singular.camelCase}});
   });
 });

@@ -1,0 +1,3 @@
+  static {{resource.singular.camelCase}}() {
+    // Todo: implement {{resource.singular.camelCase}} method
+  }

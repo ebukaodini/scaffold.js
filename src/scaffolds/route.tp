@@ -1,14 +1,14 @@
 import express from "express";
-import { {{resource_sentence_case}}Controller } from "../controllers/{{resource_file_name}}.controller";
-import { {{resource_sentence_case}}Dto } from "../dtos/{{resource_file_name}}.dto";
+import { {{resource.singular.pascalCase}}Controller } from "../controllers/{{resource.singular.lowerCase}}.controller";
+import { {{resource.singular.pascalCase}}Dto } from "../dtos/{{resource.singular.lowerCase}}.dto";
 import { validator } from "../middlewares";
 
-const {{resource_lower_case}}Routes = express.Router();
+const {{resource.singular.camelCase}}Routes = express.Router();
 
-{{resource_lower_case}}Routes.post("/{{resource_lower_case_plural}}", validator({{resource_sentence_case}}Dto, "create"), {{resource_sentence_case}}Controller.create{{resource_sentence_case}});
-{{resource_lower_case}}Routes.get("/{{resource_lower_case_plural}}", {{resource_sentence_case}}Controller.findAll{{resource_sentence_case_plural}});
-{{resource_lower_case}}Routes.get("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", {{resource_sentence_case}}Controller.findOne{{resource_sentence_case}});
-{{resource_lower_case}}Routes.patch("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", validator({{resource_sentence_case}}Dto, "update"), {{resource_sentence_case}}Controller.update{{resource_sentence_case}});
-{{resource_lower_case}}Routes.delete("/{{resource_lower_case_plural}}/:{{resource_lower_case}}Id", {{resource_sentence_case}}Controller.delete{{resource_sentence_case}});
+{{resource.singular.camelCase}}Routes.post("/{{resource.plural.lowerCase}}", validator({{resource.singular.pascalCase}}Dto, "create"), {{resource.singular.pascalCase}}Controller.create{{resource.singular.pascalCase}});
+{{resource.singular.camelCase}}Routes.get("/{{resource.plural.lowerCase}}", {{resource.singular.pascalCase}}Controller.findAll{{resource.plural.pascalCase}});
+{{resource.singular.camelCase}}Routes.get("/{{resource.plural.lowerCase}}/:{{resource.singular.camelCase}}Id", {{resource.singular.pascalCase}}Controller.findOne{{resource.singular.pascalCase}});
+{{resource.singular.camelCase}}Routes.patch("/{{resource.plural.lowerCase}}/:{{resource.singular.camelCase}}Id", validator({{resource.singular.pascalCase}}Dto, "update"), {{resource.singular.pascalCase}}Controller.update{{resource.singular.pascalCase}});
+{{resource.singular.camelCase}}Routes.delete("/{{resource.plural.lowerCase}}/:{{resource.singular.camelCase}}Id", {{resource.singular.pascalCase}}Controller.delete{{resource.singular.pascalCase}});
 
-export default {{resource_lower_case}}Routes;
+export default {{resource.singular.camelCase}}Routes;

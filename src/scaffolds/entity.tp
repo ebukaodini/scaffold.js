@@ -1,4 +1,4 @@
-export class {{resource_sentence_case}} {
+export class {{resource.singular.pascalCase}} {
   id: number;
   name: string;
 }

@@ -1,45 +1,45 @@
-import { {{resource_sentence_case}}Dto } from "../dtos/{{resource_file_name}}.dto";
-import { {{resource_sentence_case}} } from "../entities/{{resource_file_name}}.entity";
-import { connectDb } from "../services/db";
+import { {{resource.singular.pascalCase}}Dto } from "../dtos/{{resource.singular.lowerCase}}.dto";
+import { {{resource.singular.pascalCase}} } from "../entities/{{resource.singular.lowerCase}}.entity";
+import { DBService } from "../services/db";
 
-export class {{resource_sentence_case}}Repo {
-  static db = connectDb();
+export class {{resource.singular.pascalCase}}Repo {
+  static db = DBService.connect();
 
-  static async create({{resource_lower_case}}: {{resource_sentence_case}}Dto): Promise<{{resource_sentence_case}}> {
+  static async create({{resource.singular.camelCase}}: {{resource.singular.pascalCase}}Dto): Promise<{{resource.singular.pascalCase}}> {
     try {
-      return await this.db.{{resource_lower_case_plural}}.create({ data: {{resource_lower_case}} });
+      return await this.db.{{resource.singular.camelCase}}.create({ data: {{resource.singular.camelCase}} });
     } catch (error: any) {
       throw error;
     }
   }
 
-  static async findAll(): Promise<{{resource_sentence_case}}[]> {
+  static async findAll(): Promise<{{resource.singular.pascalCase}}[]> {
     try {
-      return await this.db.{{resource_lower_case_plural}}.findMany();
+      return await this.db.{{resource.singular.camelCase}}.findMany();
     } catch (error: any) {
       throw error;
     }
   }
 
-  static async findOne({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
+  static async findOne({{resource.singular.camelCase}}Id: {{resource.singular.pascalCase}}["id"]): Promise<{{resource.singular.pascalCase}}> {
     try {
-      return await this.db.{{resource_lower_case_plural}}.findUnique({ where: { id: {{resource_lower_case}}Id } });
+      return await this.db.{{resource.singular.camelCase}}.findUnique({ where: { id: {{resource.singular.camelCase}}Id } });
     } catch (error: any) {
       throw error;
     }
   }
 
-  static async update({{resource_lower_case}}Id: {{resource_sentence_case}}["id"], {{resource_lower_case}}: {{resource_sentence_case}}Dto): Promise<{{resource_sentence_case}}> {
+  static async update({{resource.singular.camelCase}}Id: {{resource.singular.pascalCase}}["id"], {{resource.singular.camelCase}}: {{resource.singular.pascalCase}}Dto): Promise<{{resource.singular.pascalCase}}> {
     try {
-      return await this.db.{{resource_lower_case_plural}}.update({ data: {{resource_lower_case}}, where: { id: {{resource_lower_case}}Id } });
+      return await this.db.{{resource.singular.camelCase}}.update({ data: {{resource.singular.camelCase}}, where: { id: {{resource.singular.camelCase}}Id } });
     } catch (error: any) {
       throw error;
     }
   }
 
-  static async delete({{resource_lower_case}}Id: {{resource_sentence_case}}["id"]): Promise<{{resource_sentence_case}}> {
+  static async delete({{resource.singular.camelCase}}Id: {{resource.singular.pascalCase}}["id"]): Promise<{{resource.singular.pascalCase}}> {
     try {
-      return await this.db.{{resource_lower_case_plural}}.delete({ where: { id: {{resource_lower_case}}Id } });
+      return await this.db.{{resource.singular.camelCase}}.delete({ where: { id: {{resource.singular.camelCase}}Id } });
     } catch (error: any) {
       throw error;
     }

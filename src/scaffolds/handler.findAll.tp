@@ -5,17 +5,17 @@ import {
   Context,
 } from "aws-lambda";
 import { response } from "../../middlewares";
-import { {{resource_sentence_case}}Dto } from "../../dtos/{{resource_file_name}}.dto";
-import { {{resource_sentence_case}}Repo } from "../../repos/{{resource_file_name}}.repo";
+import { {{resource.singular.pascalCase}}Dto } from "../../dtos/{{resource.singular.lowerCase}}.dto";
+import { {{resource.singular.pascalCase}}Repo } from "../../repos/{{resource.singular.lowerCase}}.repo";
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   _context: Context
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const {{resource_lower_case_plural}} = await {{resource_sentence_case}}Repo.findAll(); 
-    return response.success("All {{resource_lower_case_plural}}.", {{resource_sentence_case}}Dto.toArray({{resource_lower_case_plural}}));
+    const {{resource.plural.camelCase}} = await {{resource.singular.pascalCase}}Repo.findAll(); 
+    return response.success("All {{resource.plural.lowerCase.spaceCase}}.", {{resource.singular.pascalCase}}Dto.toArray({{resource.plural.camelCase}}));
   } catch (error: any) {
-    return response.error("{{resource_sentence_case}}s not found!", error.message);
+    return response.error("{{resource.plural.sentenceCase.spaceCase}} not found!", error.message);
   }
 };

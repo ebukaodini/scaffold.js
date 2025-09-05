@@ -1,53 +1,53 @@
 import { Request, Response } from "express";
-import { {{resource_sentence_case}}Repo } from "../repos/{{resource_file_name}}.repo";
-import { {{resource_sentence_case}}Dto } from "../dtos/{{resource_file_name}}.dto";
+import { {{resource.singular.pascalCase}}Repo } from "../repos/{{resource.singular.lowerCase}}.repo";
+import { {{resource.singular.pascalCase}}Dto } from "../dtos/{{resource.singular.lowerCase}}.dto";
 import IResponse from "../interfaces/IResponse";
 
-export class {{resource_sentence_case}}Controller {
-  static async create{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+export class {{resource.singular.pascalCase}}Controller {
+  static async create{{resource.singular.pascalCase}}(req: Request, res: Response): Promise<IResponse> {
     try {
-      const data = {{resource_sentence_case}}Dto.fromJson(req.body);
-      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.create(data);
-      return res.success("{{resource_sentence_case}} created.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+      const data = {{resource.singular.pascalCase}}Dto.fromJson(req.body);
+      const {{resource.singular.camelCase}} = await {{resource.singular.pascalCase}}Repo.create(data);
+      return res.success("{{resource.singular.sentenceCase.spaceCase}} created.", {{resource.singular.pascalCase}}Dto.toJson({{resource.singular.camelCase}}));
     } catch (error: any) {
-      return res.error("{{resource_sentence_case}} not created!", error.message);
+      return res.error("{{resource.singular.sentenceCase.spaceCase}} not created!", error.message);
     }
   }
 
-  static async findAll{{resource_sentence_case}}s(req: Request, res: Response): Promise<IResponse> {
+  static async findAll{{resource.plural.pascalCase}}(req: Request, res: Response): Promise<IResponse> {
     try {
-      const {{resource_lower_case_plural}} = await {{resource_sentence_case}}Repo.findAll();
-      return res.success("All {{resource_lower_case_plural}}.", {{resource_sentence_case}}Dto.toArray({{resource_lower_case_plural}}));
+      const {{resource.plural.camelCase}} = await {{resource.singular.pascalCase}}Repo.findAll();
+      return res.success("All {{resource.plural.lowerCase.spaceCase}}.", {{resource.singular.pascalCase}}Dto.toArray({{resource.plural.camelCase}}));
     } catch (error: any) {
-      return res.error("{{resource_sentence_case}}s not found!", error.message);
+      return res.error("{{resource.plural.sentenceCase.spaceCase}} not found!", error.message);
     }
   }
 
-  static async findOne{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+  static async findOne{{resource.singular.pascalCase}}(req: Request, res: Response): Promise<IResponse> {
     try {
-      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.findOne(Number(req.params.{{resource_lower_case}}Id));
-      return res.success("{{resource_sentence_case}} details.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+      const {{resource.singular.camelCase}} = await {{resource.singular.pascalCase}}Repo.findOne(Number(req.params.{{resource.singular.camelCase}}Id));
+      return res.success("{{resource.singular.sentenceCase.spaceCase}} details.", {{resource.singular.pascalCase}}Dto.toJson({{resource.singular.camelCase}}));
     } catch (error: any) {
-      return res.error("{{resource_sentence_case}} not found!", error.message);
+      return res.error("{{resource.singular.sentenceCase.spaceCase}} not found!", error.message);
     }
   }
 
-  static async update{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+  static async update{{resource.singular.pascalCase}}(req: Request, res: Response): Promise<IResponse> {
     try {
-      const data = {{resource_sentence_case}}Dto.fromJson(req.body);
-      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.update(Number(req.params.{{resource_lower_case}}Id), data);
-      return res.success("{{resource_sentence_case}} updated.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+      const data = {{resource.singular.pascalCase}}Dto.fromJson(req.body);
+      const {{resource.singular.camelCase}} = await {{resource.singular.pascalCase}}Repo.update(Number(req.params.{{resource.singular.camelCase}}Id), data);
+      return res.success("{{resource.singular.sentenceCase.spaceCase}} updated.", {{resource.singular.pascalCase}}Dto.toJson({{resource.singular.camelCase}}));
     } catch (error: any) {
-      return res.error("{{resource_sentence_case}} not updated!", error.message);
+      return res.error("{{resource.singular.sentenceCase.spaceCase}} not updated!", error.message);
     }
   }
 
-  static async delete{{resource_sentence_case}}(req: Request, res: Response): Promise<IResponse> {
+  static async delete{{resource.singular.pascalCase}}(req: Request, res: Response): Promise<IResponse> {
     try {
-      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.delete(Number(req.params.{{resource_lower_case}}Id));
-      return res.success("{{resource_sentence_case}} deleted.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+      const {{resource.singular.camelCase}} = await {{resource.singular.pascalCase}}Repo.delete(Number(req.params.{{resource.singular.camelCase}}Id));
+      return res.success("{{resource.singular.sentenceCase.spaceCase}} deleted.", {{resource.singular.pascalCase}}Dto.toJson({{resource.singular.camelCase}}));
     } catch (error: any) {
-      return res.error("{{resource_sentence_case}} not deleted!", error.message);
+      return res.error("{{resource.singular.sentenceCase.spaceCase}} not deleted!", error.message);
     }
   }
 }

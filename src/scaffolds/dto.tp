@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { {{resource_sentence_case}} } from "../entities/{{resource_file_name}}.entity";
+import { {{resource.singular.pascalCase}} } from "../entities/{{resource.singular.lowerCase}}.entity";
 
-export class {{resource_sentence_case}}Dto {
+export class {{resource.singular.pascalCase}}Dto {
   @IsNumber({}, { message: "Invalid ID", groups: [] })
   id?: number;
 
@@ -9,27 +9,27 @@ export class {{resource_sentence_case}}Dto {
   @IsNotEmpty({ message: "Name is required", groups: ["create", "update"] })
   name: string;
 
-  public static fromJson(data: { [key: string]: any }): {{resource_sentence_case}}Dto {
-    const {{resource_lower_case}}: {{resource_sentence_case}}Dto = new {{resource_sentence_case}}Dto();
+  public static fromJson(data: { [key: string]: any }): {{resource.singular.pascalCase}}Dto {
+    const {{resource.singular.camelCase}}: {{resource.singular.pascalCase}}Dto = new {{resource.singular.pascalCase}}Dto();
 
-    if (data?.id) {{resource_lower_case}}.id = data.id;
-    if (data?.name) {{resource_lower_case}}.name = data.name;
+    if (data?.id) {{resource.singular.camelCase}}.id = data.id;
+    if (data?.name) {{resource.singular.camelCase}}.name = data.name;
 
-    return {{resource_lower_case}};
+    return {{resource.singular.camelCase}};
   }
 
-  public static toJson({{resource_lower_case}}: {{resource_sentence_case}}): object {
-    if (!{{resource_lower_case}}) {
+  public static toJson({{resource.singular.camelCase}}: {{resource.singular.pascalCase}}): object {
+    if (!{{resource.singular.camelCase}}) {
       return;
     }
 
     return {
-      id: {{resource_lower_case}}.id,
-      name: {{resource_lower_case}}.name,
+      id: {{resource.singular.camelCase}}.id,
+      name: {{resource.singular.camelCase}}.name,
     };
   }
 
-  public static toArray({{resource_lower_case_plural}}: {{resource_sentence_case}}[]): object[] {
-    return {{resource_lower_case_plural}}.map(({{resource_lower_case}}) => this.toJson({{resource_lower_case}}));
+  public static toArray({{resource.plural.camelCase}}: {{resource.singular.pascalCase}}[]): object[] {
+    return {{resource.plural.camelCase}}.map(({{resource.singular.camelCase}}) => this.toJson({{resource.singular.camelCase}}));
   }
 }

@@ -1,0 +1,5 @@
+export class {{resource.singular.pascalCase}}Service {
+  static init() {
+    // Todo: implement init method
+  }
+}

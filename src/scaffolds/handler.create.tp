@@ -5,22 +5,22 @@ import {
   Context,
 } from "aws-lambda";
 import { response, validator } from "../../middlewares";
-import { {{resource_sentence_case}}Dto } from "../../dtos/{{resource_file_name}}.dto";
-import { {{resource_sentence_case}}Repo } from "../../repos/{{resource_file_name}}.repo";
+import { {{resource.singular.pascalCase}}Dto } from "../../dtos/{{resource.singular.lowerCase}}.dto";
+import { {{resource.singular.pascalCase}}Repo } from "../../repos/{{resource.singular.lowerCase}}.repo";
 import { Middleware } from "../../services/middleware";
 
 export const handler = Middleware.use(
-  [validator({{resource_sentence_case}}Dto, "create")],
+  [validator({{resource.singular.pascalCase}}Dto, "create")],
   async (
     event: APIGatewayProxyEvent,
     _context: Context
   ): Promise<APIGatewayProxyResult> => {
     try {
-      const data = {{resource_sentence_case}}Dto.fromJson(JSON.parse(event.body!));
-      const {{resource_lower_case}} = await {{resource_sentence_case}}Repo.create(data);
-      return response.success("{{resource_sentence_case}} created.", {{resource_sentence_case}}Dto.toJson({{resource_lower_case}}));
+      const data = {{resource.singular.pascalCase}}Dto.fromJson(JSON.parse(event.body!));
+      const {{resource.singular.camelCase}} = await {{resource.singular.pascalCase}}Repo.create(data);
+      return response.success("{{resource.singular.sentenceCase.spaceCase}} created.", {{resource.singular.pascalCase}}Dto.toJson({{resource.singular.camelCase}}));
     } catch (error: any) {
-      return response.error("{{resource_sentence_case}} not created!", error.message);
+      return response.error("{{resource.singular.sentenceCase.spaceCase}} not created!", error.message);
     }
   }
 );
