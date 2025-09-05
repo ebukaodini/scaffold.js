@@ -1,8 +1,18 @@
 {
   "name": "@ebukaodini/scaffoldjs",
-  "version": "1.0.0",
-  "description": "A CLI tool for scaffolding code templates",
+  "version": "1.0.1",
+  "description": "A powerful CLI tool for scaffolding code templates with multi-variable support",
   "main": "build/index.js",
+  "bin": {
+    "scaffold": "build/index.js"
+  },
+  "files": [
+    "build/**/*",
+    "scaffold.config.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "clean": "rimraf build",
     "prepare": "npm run build",
@@ -13,31 +23,30 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --write --ignore-unknown ."
   },
-  "bin": {
-    "scaffold": "build/index.js"
+  "keywords": [
+    "cli",
+    "scaffold",
+    "template",
+    "generator",
+    "code-generation",
+    "boilerplate",
+    "typescript",
+    "nodejs"
+  ],
+  "author": {
+    "name": "Ebuka Odini",
+    "email": "ebukaodini@gmail.com",
+    "url": "https://github.com/ebukaodini"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ebukaodini/scaffold.js.git"
   },
-  "keywords": [
-    "scaffold",
-    "scaffolder",
-    "scaffolding",
-    "templates",
-    "boilerplate",
-    "boilerplates",
-    "cli",
-    "file",
-    "bootstrap",
-    "automation",
-    "generate",
-    "generator",
-    "nodejs",
-    "low-code"
-  ],
-  "author": "Ebuka Odini <ebukaodini@gmail.com> (https)",
-  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ebukaodini/scaffold.s/issues"
+  },
+  "homepage": "https://github.com/ebukaodini/scaffold.js#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "pluralize": "^8.0.0",

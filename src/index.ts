@@ -10,7 +10,6 @@ const program = new Command();
 
 // Configure the main program
 program.description(pkg.description);
-// .version(pkg.version, "-v, --version");
 
 // Help command - display help information
 program

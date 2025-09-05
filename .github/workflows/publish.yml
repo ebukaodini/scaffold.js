@@ -48,27 +48,20 @@ jobs:
         id: extract_version
         uses: Saionaro/extract-package-version@v1.2.1
 
-      - name: Update Changelog
-        if: steps.publish_to_npm.outcome == 'success'
-        uses: stefanzweifel/changelog-updater-action@v1
+      - name: Generate Changelog
+        id: changelog
+        uses: requarks/changelog-action@v1
         with:
-          latest-version: v${{ steps.extract_version.outputs.version }}
-          release-notes: |
-            ## What's Changed
-            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          # This writes the changelog to CHANGELOG.md
+          writeToFile: true
 
-            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.after }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit updated CHANGELOG
+      - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          branch: main
-          commit_message: Update CHANGELOG
+          commit_message: "docs(changelog): Update for release v${{ steps.extract_version.outputs.version }}"
           file_pattern: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create tag
         if: steps.publish_to_npm.outcome == 'success'

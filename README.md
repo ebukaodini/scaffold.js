@@ -159,7 +159,7 @@ your-project/
 
 ### Chaining Transformations
 
-```typescript
+```txt
 {{resource.singular.pascalCase}}     // user-accounts → UserAccount
 {{module.plural.upperCase}}          // auth → AUTHS
 {{feature.singular.camelCase}}       // dining-tables → diningTable
