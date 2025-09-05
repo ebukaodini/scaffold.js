@@ -1,6 +1,6 @@
 {
   "name": "@ebukaodini/scaffoldjs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A powerful CLI tool for scaffolding code templates with multi-variable support",
   "main": "build/index.js",
   "bin": {
