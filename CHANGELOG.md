@@ -5,10 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v1.1.2] - 2025-09-05
-### :bug: Bug Fixes
-- [`189bbbf`](https://github.com/ebukaodini/scaffold.js/commit/189bbbf2180f39560fc7670177c3188d8f184eec) - update issue tracker URL in package.json *(commit by [@ebukaodini](https://github.com/ebukaodini))*
+## [v1.1.3] - 2025-09-05
+### :wrench: Chores
+- [`5ba33b2`](https://github.com/ebukaodini/scaffold.js/commit/5ba33b20b907954cfd96ea88c37a8df447d66566) - bump package version to 1.1.3 and add commander dependency *(commit by [@ebukaodini](https://github.com/ebukaodini))*
 
+
+## [v1.1.2] - 2025-09-05
+
+### :bug: Bug Fixes
+
+- [`189bbbf`](https://github.com/ebukaodini/scaffold.js/commit/189bbbf2180f39560fc7670177c3188d8f184eec) - update issue tracker URL in package.json _(commit by [@ebukaodini](https://github.com/ebukaodini))_
 
 ## [v1.1.1] - 2025-09-05
 
@@ -60,3 +66,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v1.1.0]: https://github.com/ebukaodini/scaffold.js/compare/v1.0.3...v1.1.0
 [v1.1.1]: https://github.com/ebukaodini/scaffold.js/compare/v1.1.0...v1.1.1
 [v1.1.2]: https://github.com/ebukaodini/scaffold.js/compare/v1.1.1...v1.1.2
+[v1.1.3]: https://github.com/ebukaodini/scaffold.js/compare/v1.1.2...v1.1.3
