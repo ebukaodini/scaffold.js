@@ -22,7 +22,7 @@ A powerful CLI tool for scaffolding code templates with multi-variable support. 
 
 ```bash
 # Install globally
-npm install -g scaffoldjs
+npm install -g scaffoldjs-cli
 
 # Or use directly with npx
 npx scaffold help
