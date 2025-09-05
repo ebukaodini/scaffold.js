@@ -88,7 +88,7 @@ export class IO {
     return new Promise((resolve) => {
       rl.question(` ${chalk.grey(question)}`, (answer) => {
         rl.close();
-        resolve(answer.toLowerCase().charAt(0) as unknown as T);
+        resolve(answer as unknown as T);
       });
     });
   }

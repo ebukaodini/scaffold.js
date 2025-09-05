@@ -11,9 +11,11 @@ export class Scaffold {
   private static configFile = "scaffold.config.json";
   private static config: any;
 
-  // Updated regex to handle any variable, not just resource
+  // Regex to handle any variable
   private static variableRegex =
     /\{{2}([a-zA-Z_][a-zA-Z0-9_]*)(\.(raw|singular|plural|lowerCase|upperCase|sentenceCase|camelCase|pascalCase|snakeCase|hyphenCase|spaceCase))*\}{2}/g;
+
+  private static commandVariables: Record<string, string> = {};
 
   static async setup(force: boolean = false) {
     try {
@@ -108,9 +110,7 @@ export class Scaffold {
       // Parse variables from command line
       const parsedVars = this.parseVariables(vars);
       // Add resource as the default variable
-      const allVars = { resource, ...parsedVars };
-
-      Logger.muted(`Variables: ${JSON.stringify(allVars)}`);
+      this.commandVariables = { resource, ...parsedVars };
 
       // Parse the template parameter to get list of templates to generate
       const templatesToGenerate = this.parseTemplateParameter(
@@ -129,7 +129,6 @@ export class Scaffold {
         const generated = await this.generateFromTemplate(
           templateKey,
           templateConfig,
-          allVars,
           force
         );
 
@@ -178,10 +177,12 @@ export class Scaffold {
       // Parse variables from command line
       const parsedVars = this.parseVariables(vars);
       // Add resource if provided
-      const allVars = resource ? { resource, ...parsedVars } : parsedVars;
+      this.commandVariables = resource
+        ? { resource, ...parsedVars }
+        : parsedVars;
 
       // Process template source path with variables
-      const srcPath = this.processVariables(templateConfig.src, allVars);
+      const srcPath = this.processVariables(templateConfig.src);
 
       // Check if source template exists
       if (!IO.exists(srcPath)) {
@@ -198,7 +199,9 @@ export class Scaffold {
 
       // Check if all required variables are provided
       if (containsVars && requiredVars.length > 0) {
-        const missingVars = requiredVars.filter((varName) => !allVars[varName]);
+        const missingVars = requiredVars.filter(
+          (varName) => !this.commandVariables[varName]
+        );
         if (missingVars.length > 0) {
           throw new Error(
             `Template ${template} requires variables: ${missingVars.join(", ")} but they were not provided`
@@ -207,7 +210,7 @@ export class Scaffold {
       }
 
       // Process template variables
-      content = this.processVariables(content, allVars);
+      content = this.processVariables(content);
 
       // Read target file
       let targetContent = IO.readFile(file);
@@ -381,15 +384,17 @@ export class Scaffold {
   private static async generateFromTemplate(
     templateKey: string,
     template: any,
-    variables: Record<string, string>,
     force: boolean
   ) {
     try {
       Logger.info(`Generating ${templateKey}...`);
 
-      // Process template source and destination paths
-      const srcPath = this.processVariables(template.src, variables);
-      const destPath = this.processVariables(template.dest, variables);
+      // Collect ALL missing variables from template config and content
+      await this.collectAllRequiredVariables(template);
+
+      // Now safely process paths with complete variables
+      const srcPath = this.processVariables(template.src);
+      const destPath = this.processVariables(template.dest);
 
       // Check if source template exists
       if (!IO.exists(srcPath)) {
@@ -397,22 +402,9 @@ export class Scaffold {
         return false;
       }
 
-      // Read template content
+      // Read and process template content
       let content = IO.readFile(srcPath);
-
-      // Check for required variables in template content
-      const requiredVars = this.extractVariablesFromContent(content);
-      const missingVars = requiredVars.filter((varName) => !variables[varName]);
-
-      if (missingVars.length > 0) {
-        Logger.muted(
-          `Template ${templateKey} requires missing variables: ${missingVars.join(", ")} ⚠️`
-        );
-        return false;
-      }
-
-      // Process template variables
-      content = this.processVariables(content, variables);
+      content = this.processVariables(content);
 
       // Create destination directory if it doesn't exist
       const destDir = path.dirname(destPath);
@@ -420,7 +412,7 @@ export class Scaffold {
         IO.makeDir(destDir, force);
       }
 
-      // Check if destination file exists and handle override logic
+      // Handle file overwriting
       if (IO.exists(destPath)) {
         if (!force) {
           const shouldOverwrite = await IO.promptUser(
@@ -462,13 +454,85 @@ export class Scaffold {
     return variables;
   }
 
+  private static async collectAllRequiredVariables(
+    template: any
+  ): Promise<void> {
+    const allRequiredVars = new Set<string>();
+
+    // Extract variables from template src and dest paths
+    const srcVars = this.extractVariablesFromContent(template.src);
+    const destVars = this.extractVariablesFromContent(template.dest);
+
+    srcVars.forEach((v) => allRequiredVars.add(v));
+    destVars.forEach((v) => allRequiredVars.add(v));
+
+    // Try to process src path to read template content
+    // First, collect variables needed for src path
+    const srcMissingVars = srcVars.filter((v) => !this.commandVariables[v]);
+
+    if (srcMissingVars.length > 0) {
+      for (const varName of srcMissingVars) {
+        const value = await this.promptForVariable(varName);
+        if (value) {
+          this.commandVariables[varName] = value;
+        }
+      }
+    }
+
+    // Now process src path and read template content
+    const srcPath = this.processVariables(template.src);
+
+    if (IO.exists(srcPath)) {
+      const templateContent = IO.readFile(srcPath);
+      const contentVars = this.extractVariablesFromContent(templateContent);
+      contentVars.forEach((v) => allRequiredVars.add(v));
+    } else {
+      Logger.muted(`Cannot read template content from: ${srcPath}`);
+    }
+
+    // Collect any remaining missing variables
+    const allMissingVars = Array.from(allRequiredVars).filter(
+      (v) => !this.commandVariables[v]
+    );
+
+    if (allMissingVars.length > 0) {
+      for (const varName of allMissingVars) {
+        const value = await this.promptForVariable(varName);
+        if (value) {
+          this.commandVariables[varName] = value;
+        }
+      }
+    }
+  }
+
+  private static async promptForVariable(
+    varName: string
+  ): Promise<string | null> {
+    try {
+      const promptValue = await IO.promptInput<string>(
+        `Enter value for '${varName}' (or press Enter to skip): `
+      );
+
+      const variableValue = promptValue.trim();
+
+      if (variableValue) {
+        return variableValue;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      Logger.muted(`Error collecting variable '${varName}', skipping.`);
+      return null;
+    }
+  }
+
   private static extractVariablesFromContent(content: string): string[] {
     const variables = new Set<string>();
-    let match;
 
     // Reset regex to start from beginning
     this.variableRegex.lastIndex = 0;
 
+    let match;
     while ((match = this.variableRegex.exec(content)) !== null) {
       const varName = match[1];
       if (varName) {
@@ -479,10 +543,7 @@ export class Scaffold {
     return Array.from(variables);
   }
 
-  private static processVariables(
-    content: string,
-    variables: Record<string, string>
-  ): string {
+  private static processVariables(content: string): string {
     let processedContent = content;
 
     // Reset regex to start from beginning
@@ -493,10 +554,10 @@ export class Scaffold {
       this.variableRegex,
       (match, varName) => {
         // Check if variable exists
-        if (!variables[varName]) {
-          // Return the original match if variable not found
+        if (!this.commandVariables[varName]) {
+          // Log warning and return the original match unchanged
           Logger.muted(
-            `Variable '${varName}' not found in provided variables ⚠️`
+            `Variable '${varName}' not found in provided variables, leaving as-is ⚠️`
           );
           return match;
         }
@@ -506,7 +567,10 @@ export class Scaffold {
           .replace(`{{${varName}.`, "")
           .replace("}}", "");
 
-        return Transform.transform(transformation, variables[varName]);
+        return Transform.transform(
+          transformation,
+          this.commandVariables[varName]
+        );
       }
     );
 
