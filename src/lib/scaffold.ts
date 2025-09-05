@@ -159,8 +159,7 @@ export class Scaffold {
 
       // Check if target file exists
       if (!IO.exists(file)) {
-        Logger.failure(`Target file ${file} does not exist`);
-        return;
+        throw new Error(`Target file ${file} does not exist`);
       }
 
       // Get available templates from config
@@ -168,8 +167,7 @@ export class Scaffold {
 
       // Check if template exists
       if (!templates[template]) {
-        Logger.failure(`Template '${template}' not found in configuration`);
-        return;
+        throw new Error(`Template '${template}' not found in configuration`);
       }
 
       const templateConfig = templates[template];
@@ -181,89 +179,23 @@ export class Scaffold {
         ? { resource, ...parsedVars }
         : parsedVars;
 
+      // Collect ALL required variables for injection template
+      await this.collectAllRequiredVariables(templateConfig);
+
       // Process template source path with variables
       const srcPath = this.processVariables(templateConfig.src);
 
       // Check if source template exists
       if (!IO.exists(srcPath)) {
-        Logger.failure(`Template file not found: ${srcPath}`);
-        return;
+        throw new Error(`Template file not found: ${srcPath}`);
       }
 
-      // Read template content
+      // Read and process template content
       let content = IO.readFile(srcPath);
-
-      // Find out if there are any variables in the template
-      const containsVars = this.variableRegex.test(content);
-      const requiredVars = this.extractVariablesFromContent(content);
-
-      // Check if all required variables are provided
-      if (containsVars && requiredVars.length > 0) {
-        const missingVars = requiredVars.filter(
-          (varName) => !this.commandVariables[varName]
-        );
-        if (missingVars.length > 0) {
-          throw new Error(
-            `Template ${template} requires variables: ${missingVars.join(", ")} but they were not provided`
-          );
-        }
-      }
-
-      // Process template variables
       content = this.processVariables(content);
 
-      // Read target file
-      let targetContent = IO.readFile(file);
-      let injectedContent = targetContent;
-
-      if (target === undefined) {
-        const promptInput = await IO.promptInput<"t" | "b">(
-          "Target point not found. Attach to file top/bottom? (t/b/N): "
-        );
-        const shouldAppendToFile = promptInput.toLowerCase() === "b";
-        const shouldPrependToFile = promptInput.toLowerCase() === "t";
-
-        if (!shouldAppendToFile && !shouldPrependToFile) {
-          Logger.muted(`Skipping injection`);
-          return;
-        }
-
-        // Check if content already exists (to avoid duplicates)
-        if (targetContent.includes(content.trim())) {
-          Logger.muted(`Content already exists in ${file}, skipping injection`);
-          return;
-        }
-
-        // Inject content at the start of the file
-        if (shouldPrependToFile) {
-          injectedContent = content.concat(`\n${targetContent}`);
-        }
-
-        // Inject content at the end of the file
-        if (shouldAppendToFile) {
-          injectedContent = targetContent.concat(`\n${content}`);
-        }
-      } else {
-        // Check if injection point exists
-        if (!targetContent.includes(target)) {
-          throw new Error(`Injection point '${target}' not found in ${file}`);
-        }
-
-        // Check if content already exists (to avoid duplicates)
-        if (targetContent.includes(content.trim())) {
-          Logger.muted(`Content already exists in ${file}, skipping injection`);
-          return;
-        }
-
-        // Inject content at the specified point
-        injectedContent = targetContent.replace(
-          target,
-          `${target}\n${content}\n`
-        );
-      }
-
-      // Write the modified file
-      IO.writeFile(file, injectedContent, true);
+      // Handle injection logic
+      await this.performInjection(file, content, target);
 
       Logger.success(`Successfully injected ${srcPath} into ${file} 🎉`);
     } catch (error) {
@@ -575,6 +507,65 @@ export class Scaffold {
     );
 
     return processedContent;
+  }
+
+  private static async performInjection(
+    file: string,
+    content: string,
+    target?: string
+  ): Promise<void> {
+    // Read target file
+    let targetContent = IO.readFile(file);
+    let injectedContent = targetContent;
+
+    if (target === undefined) {
+      const promptInput = await IO.promptInput<"t" | "b">(
+        "Target point not found. Attach to file top/bottom? (t/b/N): "
+      );
+      const shouldAppendToFile = promptInput.toLowerCase() === "b";
+      const shouldPrependToFile = promptInput.toLowerCase() === "t";
+
+      if (!shouldAppendToFile && !shouldPrependToFile) {
+        Logger.muted(`Skipping injection`);
+        return;
+      }
+
+      // Check if content already exists (to avoid duplicates)
+      if (targetContent.includes(content.trim())) {
+        Logger.muted(`Content already exists in ${file}, skipping injection`);
+        return;
+      }
+
+      // Inject content at the start of the file
+      if (shouldPrependToFile) {
+        injectedContent = content.concat(`\n${targetContent}`);
+      }
+
+      // Inject content at the end of the file
+      if (shouldAppendToFile) {
+        injectedContent = targetContent.concat(`\n${content}`);
+      }
+    } else {
+      // Check if injection point exists
+      if (!targetContent.includes(target)) {
+        throw new Error(`Injection point '${target}' not found in ${file}`);
+      }
+
+      // Check if content already exists (to avoid duplicates)
+      if (targetContent.includes(content.trim())) {
+        Logger.muted(`Content already exists in ${file}, skipping injection`);
+        return;
+      }
+
+      // Inject content at the specified point
+      injectedContent = targetContent.replace(
+        target,
+        `${target}\n${content}\n`
+      );
+    }
+
+    // Write the modified file
+    IO.writeFile(file, injectedContent, true);
   }
 
   static handleError(error: any, nl: boolean = true) {
