@@ -3,12 +3,6 @@ import { Logger } from "./logger";
 import { IO } from "./io";
 import { Transform } from "./transformer";
 
-type Template = {
-  src: string;
-  dest: string | "inject";
-  vars?: Record<string, string>;
-};
-
 export class Scaffold {
   private static pkgDir = path.resolve(__dirname, ".."); // Get the absolute path of the package directory
   private static pkgScaffolds = path.join(this.pkgDir, "scaffolds");
@@ -17,8 +11,9 @@ export class Scaffold {
   private static configFile = "scaffold.config.json";
   private static config: any;
 
-  private static resourceVarRegex =
-    /\{{2}(resource)(\.(raw|singular|plural|lowerCase|upperCase|sentenceCase|camelCase|pascalCase|snakeCase|spaceCase))*\}{2}/g;
+  // Updated regex to handle any variable, not just resource
+  private static variableRegex =
+    /\{{2}([a-zA-Z_][a-zA-Z0-9_]*)(\.(raw|singular|plural|lowerCase|upperCase|sentenceCase|camelCase|pascalCase|snakeCase|hyphenCase|spaceCase))*\}{2}/g;
 
   static async setup(force: boolean = false) {
     try {
@@ -93,6 +88,7 @@ export class Scaffold {
   static async make(
     resource: string,
     template: string,
+    vars: string[] = [],
     force: boolean = false
   ) {
     try {
@@ -109,6 +105,13 @@ export class Scaffold {
         throw new Error("No templates found in configuration");
       }
 
+      // Parse variables from command line
+      const parsedVars = this.parseVariables(vars);
+      // Add resource as the default variable
+      const allVars = { resource, ...parsedVars };
+
+      Logger.muted(`Variables: ${JSON.stringify(allVars)}`);
+
       // Parse the template parameter to get list of templates to generate
       const templatesToGenerate = this.parseTemplateParameter(
         template,
@@ -119,15 +122,24 @@ export class Scaffold {
         throw new Error(`No valid templates found for: ${template}`);
       }
 
+      let templateGenerated = 0;
       // Generate each selected template
       for (const templateKey of templatesToGenerate) {
-        const template = templates[templateKey];
-        await this.generateFromTemplate(templateKey, template, resource, force);
+        const templateConfig = templates[templateKey];
+        const generated = await this.generateFromTemplate(
+          templateKey,
+          templateConfig,
+          allVars,
+          force
+        );
+
+        if (generated) templateGenerated++;
       }
 
-      Logger.success(
-        `Successfully generated ${templatesToGenerate.length} resource(s) for: ${resource} 🎉`
-      );
+      if (templateGenerated > 0)
+        Logger.success(
+          `Successfully generated ${templateGenerated} resource(s) for: ${resource} 🎉`
+        );
     } catch (error) {
       this.handleError(error, false);
     }
@@ -137,7 +149,8 @@ export class Scaffold {
     template: string,
     file: string,
     target?: string,
-    resource?: string
+    resource?: string,
+    vars: string[] = []
   ) {
     try {
       // Parse the config
@@ -162,9 +175,15 @@ export class Scaffold {
 
       const templateConfig = templates[template];
 
-      // Check if source template exists
+      // Parse variables from command line
+      const parsedVars = this.parseVariables(vars);
+      // Add resource if provided
+      const allVars = resource ? { resource, ...parsedVars } : parsedVars;
 
-      const srcPath = this.processVariables(templateConfig.src, resource ?? "");
+      // Process template source path with variables
+      const srcPath = this.processVariables(templateConfig.src, allVars);
+
+      // Check if source template exists
       if (!IO.exists(srcPath)) {
         Logger.failure(`Template file not found: ${srcPath}`);
         return;
@@ -173,21 +192,22 @@ export class Scaffold {
       // Read template content
       let content = IO.readFile(srcPath);
 
-      // Find out if there are any resource variables in the template
-      const containsVars = this.resourceVarRegex.test(content);
+      // Find out if there are any variables in the template
+      const containsVars = this.variableRegex.test(content);
+      const requiredVars = this.extractVariablesFromContent(content);
 
-      if (resource === undefined && containsVars) {
-        throw new Error(
-          `Template ${template} contains resource variable but no resource was provided`
-        );
+      // Check if all required variables are provided
+      if (containsVars && requiredVars.length > 0) {
+        const missingVars = requiredVars.filter((varName) => !allVars[varName]);
+        if (missingVars.length > 0) {
+          throw new Error(
+            `Template ${template} requires variables: ${missingVars.join(", ")} but they were not provided`
+          );
+        }
       }
 
       // Process template variables
-      content = this.processVariables(
-        content,
-        resource ?? ""
-        // templateConfig.vars || ["resource"]
-      );
+      content = this.processVariables(content, allVars);
 
       // Read target file
       let targetContent = IO.readFile(file);
@@ -218,7 +238,7 @@ export class Scaffold {
 
         // Inject content at the end of the file
         if (shouldAppendToFile) {
-          injectedContent = targetContent.concat(`\n${content}\n`);
+          injectedContent = targetContent.concat(`\n${content}`);
         }
       } else {
         // Check if injection point exists
@@ -361,31 +381,38 @@ export class Scaffold {
   private static async generateFromTemplate(
     templateKey: string,
     template: any,
-    resource: string,
+    variables: Record<string, string>,
     force: boolean
   ) {
     try {
       Logger.info(`Generating ${templateKey}...`);
 
       // Process template source and destination paths
-      const srcPath = this.processVariables(template.src, resource);
-      const destPath = this.processVariables(template.dest, resource);
+      const srcPath = this.processVariables(template.src, variables);
+      const destPath = this.processVariables(template.dest, variables);
 
       // Check if source template exists
       if (!IO.exists(srcPath)) {
         Logger.muted(`Template not found: ${srcPath} ⚠️`);
-        return;
+        return false;
       }
 
       // Read template content
       let content = IO.readFile(srcPath);
 
+      // Check for required variables in template content
+      const requiredVars = this.extractVariablesFromContent(content);
+      const missingVars = requiredVars.filter((varName) => !variables[varName]);
+
+      if (missingVars.length > 0) {
+        Logger.muted(
+          `Template ${templateKey} requires missing variables: ${missingVars.join(", ")} ⚠️`
+        );
+        return false;
+      }
+
       // Process template variables
-      content = this.processVariables(
-        content,
-        resource
-        // template.vars || ["resource"]
-      );
+      content = this.processVariables(content, variables);
 
       // Create destination directory if it doesn't exist
       const destDir = path.dirname(destPath);
@@ -401,7 +428,7 @@ export class Scaffold {
           );
           if (!shouldOverwrite) {
             Logger.muted(`Skipping ${templateKey} (file exists)`);
-            return;
+            return false;
           }
         }
       }
@@ -410,46 +437,76 @@ export class Scaffold {
       IO.writeFile(destPath, content, true);
 
       Logger.success(`Generated: ${destPath} ✅`, false);
+      return true;
     } catch (error: any) {
       Logger.failure(
         `Failed to generate ${templateKey}: ${error.message} ‼️`,
         false
       );
+      return false;
     }
   }
 
-  private static parseVariables(vars: string[]) {
-    let variables = {};
+  private static parseVariables(vars: string[]): Record<string, string> {
+    const variables: Record<string, string> = {};
 
     vars.forEach((v) => {
       if (v.includes("=")) {
-        const [k, value] = v.split("=");
-        variables = { ...variables, [k!]: value };
+        const [key, value] = v.split("=");
+        if (key && value) {
+          variables[key.trim()] = value.trim();
+        }
       }
     });
 
     return variables;
   }
 
-  // In the future, this method would accept a list of variables and their values
-  // Now, it is processing any variable and replace it with the resource value transformed
-  private static processVariables(content: string, resource: string): string {
+  private static extractVariablesFromContent(content: string): string[] {
+    const variables = new Set<string>();
+    let match;
+
+    // Reset regex to start from beginning
+    this.variableRegex.lastIndex = 0;
+
+    while ((match = this.variableRegex.exec(content)) !== null) {
+      const varName = match[1];
+      if (varName) {
+        variables.add(varName);
+      }
+    }
+
+    return Array.from(variables);
+  }
+
+  private static processVariables(
+    content: string,
+    variables: Record<string, string>
+  ): string {
     let processedContent = content;
 
-    // Process each variable
-    // for (const varName of vars) {
-    // }
+    // Reset regex to start from beginning
+    this.variableRegex.lastIndex = 0;
 
-    const varName = "resource";
-    // Replace all instances of {{varName.transformation}} with transformed values
+    // Replace all variable instances with their transformed values
     processedContent = processedContent.replace(
-      this.resourceVarRegex,
-      (match) => {
+      this.variableRegex,
+      (match, varName) => {
+        // Check if variable exists
+        if (!variables[varName]) {
+          // Return the original match if variable not found
+          Logger.muted(
+            `Variable '${varName}' not found in provided variables ⚠️`
+          );
+          return match;
+        }
+
         // Extract the transformation part (e.g., "resource.singular.lowerCase" -> "singular.lowerCase")
         const transformation = match
           .replace(`{{${varName}.`, "")
           .replace("}}", "");
-        return Transform.transform(transformation, resource);
+
+        return Transform.transform(transformation, variables[varName]);
       }
     );
 

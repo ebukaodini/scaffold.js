@@ -59,12 +59,22 @@ program
   .description(
     "generate a new resource (template can be: single template, comma-separated templates, or predefined group)"
   )
-  .option("-v, --vars [vars...]", "list of var=value")
+  .option(
+    "-v, --vars <vars...>",
+    "variables in key=value format (e.g., module=hospitality feature=tables)"
+  )
   .option("-f, --force", "force setup - this would override existing files")
   .action(async (resource, template, options) => {
     Logger.brand();
-    console.log({ vars: options.vars });
-    await Scaffold.make(resource, template, options.force);
+
+    // Extract variables from command line
+    const vars = options.vars || [];
+
+    if (vars.length > 0) {
+      Logger.muted(`Parsed variables: ${vars.join(", ")}`);
+    }
+
+    await Scaffold.make(resource, template, vars, options.force);
     Logger.exit(0);
   });
 
@@ -74,9 +84,27 @@ program
   .description("inject a template into an existing file at a specific point")
   .option("-t, --target [target]", "the target point within the file")
   .option("-r, --resource [resource]", "the resource name")
+  .option(
+    "-v, --vars <vars...>",
+    "variables in key=value format (e.g., module=hospitality feature=tables)"
+  )
   .action(async (template, file, options) => {
     Logger.brand();
-    await Scaffold.inject(template, file, options.target, options.resource);
+
+    // Extract variables from command line
+    const vars = options.vars || [];
+
+    if (vars.length > 0) {
+      Logger.muted(`Parsed variables: ${vars.join(", ")}`);
+    }
+
+    await Scaffold.inject(
+      template,
+      file,
+      options.target,
+      options.resource,
+      vars
+    );
     Logger.exit(0);
   });
 

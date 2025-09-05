@@ -40,7 +40,9 @@ export class Logger {
 
   static guide() {
     // description
-    this.muted("A guide on using templates, variables and transformations");
+    this.muted(
+      "A comprehensive guide on using templates, variables and transformations"
+    );
     this.newLine();
 
     // scaffold.config.json
@@ -53,43 +55,47 @@ export class Logger {
 
     this.muted("  • template sample", true);
     this.muted(
-      `    "template": {
-        "description": "A brief description for the template (optional)",
-        "src": "Filepath to the template file e.g ./scaffolds/controller.tp",
-        "dest": "Filepath to the destination file e.g ./src/controllers/{{resource.singular.lowerCase}}.controller.ts"
+      `    "controller": {
+        "description": "Generate a controller file (optional)",
+        "src": "./scaffolds/controller.tp",
+        "dest": "./src/{{module}}/controllers/{{resource.singular.lowerCase}}.controller.ts"
       }`,
       true
     );
 
     this.muted("  • inject sample", true);
     this.muted(
-      `    "inject": {
-        "description": "A brief description for the template (optional)",
-        "src": "Filepath to the template file e.g ./scaffolds/author.tp",
-        "dest": "inject" -- indicates that this is an inject template
+      `    "import-statement": {
+        "description": "Import statement for injection (optional)",
+        "src": "./scaffolds/{{feature}}-import.tp",
+        "dest": "inject"
       }`,
       true
     );
 
     this.muted("  • group sample", true);
-    this.muted(`    "group": ["template1", "template2", "template3"]`, true);
+    this.muted(
+      `    "crud-group": ["controller", "service", "dto", "entity"]`,
+      true
+    );
 
     this.dim("  N.B:", true);
     this.dim(
       "  • make sure the templates and injects src paths are correct and the files exist"
     );
-    this.dim("  • the dest path can contain variables and transformations");
+    this.dim(
+      "  • both src and dest paths can contain variables and transformations"
+    );
     this.dim("  • groups cannot contain inject templates");
     this.dim(
       "  • do not remove this file after setup, it is required for scaffolding"
     );
-    // this.newLine();
 
     // variables
     this.info("variables");
 
     this.muted(
-      "  These are placeholders in that get replaced with actual values during scaffolding.",
+      "  These are placeholders that get replaced with actual values during scaffolding.",
       true
     );
     this.muted(
@@ -137,21 +143,67 @@ export class Logger {
       true
     );
     this.muted(
+      "  • {{variable.hyphenCase}}\t\tconverts the value to hyphen case (e.g User account -> user-account)",
+      true
+    );
+    this.muted(
       "  • {{variable.sentenceCase}}\t\tconverts the value to sentence case (e.g user-account -> Useraccount)",
       true
     );
+
     this.dim("  N.B:", true);
     this.dim(
       "  • multiple transformations can be chained e.g {{variable.singular.pascalCase}}"
     );
     this.dim(
-      `  • ${chalk.bold.blueBright("resource")} is a the only predefined and allowed variable for now. Custom variables can be added in future releases`
+      `  • ${chalk.bold.blueBright("resource")} is automatically provided as the primary variable`
     );
+    this.dim(
+      "  • custom variables can be passed using the -v option (e.g., -v module=auth feature=users)"
+    );
+    this.dim(
+      "  • any variable name is supported (module, feature, domain, etc.)"
+    );
+
+    // examples section
+    this.info("examples");
+
+    this.muted("  • Basic resource generation:", true);
+    this.muted("    npx scaffold make user controller");
+    this.muted("    → generates: ./src/controllers/user.controller.ts");
+
+    this.muted("  • With custom variables:", true);
+    this.muted(
+      "    npx scaffold make table controller -v module=restaurant feature=dining"
+    );
+    this.muted(
+      "    → generates: ./src/restaurant/controllers/table.controller.ts"
+    );
+
+    this.muted("  • Multiple templates:", true);
+    this.muted(
+      "    npx scaffold make booking crud-group -v module=hotel feature=reservations"
+    );
+    this.muted("    → generates multiple files in ./src/hotel/");
+
+    this.muted("  • Template injection:", true);
+    this.muted(
+      "    npx scaffold inject import-statement src/app.module.ts -r user -v module=auth"
+    );
+    this.muted("    → injects import statement into app.module.ts");
+
+    this.muted("  • Variable usage in templates:", true);
+    this.muted(
+      "    Template: @Controller('{{module}}/{{feature}}/{{resource.plural.lowerCase}}')"
+    );
+    this.muted("    Result: @Controller('restaurant/dining/tables')");
   }
 
   static help() {
     // description
-    this.muted("A CLI tool for scaffolding code templates");
+    this.muted(
+      "A CLI tool for scaffolding code templates with multi-variable support"
+    );
     this.newLine();
 
     // usages
@@ -159,11 +211,14 @@ export class Logger {
 
     this.muted("  npx scaffold help", true);
     this.muted("  npx scaffold guide", true);
-    this.muted("  npx scaffold setup [--force]", true);
+    this.muted("  npx scaffold setup [-f]", true);
     this.muted("  npx scaffold list", true);
-    this.muted("  npx scaffold make <resource> <template> [--force]", true);
     this.muted(
-      "  npx scaffold inject <template> <file> [--target] [--resource]",
+      "  npx scaffold make <resource> <template> [-v <vars...>] [-f]",
+      true
+    );
+    this.muted(
+      "  npx scaffold inject <template> <file> [-t] [-r] [-v <vars...>]",
       true
     );
 
@@ -172,7 +227,7 @@ export class Logger {
 
     this.muted("  • help\t\tdisplays this help information", true);
     this.muted(
-      "  • guide\t\tbasic guide on using templates, variables and transformations",
+      "  • guide\t\tcomprehensive guide on using templates, variables and transformations",
       true
     );
     this.muted(
@@ -196,7 +251,7 @@ export class Logger {
     this.info("Arguments:");
 
     this.muted(
-      "  • <resource>\t\ta new resource. (e.g user, user-account)",
+      "  • <resource>\t\ta new resource. (e.g user, user-account, booking-request)",
       true
     );
     this.dim(
@@ -210,7 +265,7 @@ export class Logger {
     this.dim(
       "\t\t\tit can be a comma-separated list of templates (e.g entity,repo,test)"
     );
-    this.dim("\t\t\tit can be a predefined template group (e.g resources)");
+    this.dim("\t\t\tit can be a predefined template group (e.g crud-group)");
     this.dim(
       "\t\t\tit can be an inject template (N.B: injects cannot be used in a group)"
     );
@@ -223,8 +278,43 @@ export class Logger {
     this.muted("  • -f, --force\tforce an operation", true);
     this.dim("\t\t\tuse with caution, existing files would be overwritten!");
     this.muted("  • -t, --target\tthe target point within the file.", true);
-    this.dim("\t\t\te.g //inject:method");
+    this.dim("\t\t\te.g //inject:method or <!-- inject:imports -->");
     this.muted("  • -r, --resource\tthe resource name.", true);
     this.dim("\t\t\te.g user-account (used in inject templates)");
+    this.muted("  • -v, --vars\t\tcustom variables in key=value format", true);
+    this.dim("\t\t\te.g -v module=auth feature=users domain=admin");
+    this.dim("\t\t\tmultiple variables are space-separated");
+
+    // examples section
+    this.info("Examples:");
+
+    this.muted("  • Basic scaffolding:", true);
+    this.muted("    npx scaffold make user controller");
+
+    this.muted("  • With custom module:", true);
+    this.muted("    npx scaffold make product controller -v module=inventory");
+
+    this.muted("  • Multiple variables:", true);
+    this.muted(
+      "    npx scaffold make booking service -v module=hotel feature=reservations"
+    );
+
+    this.muted("  • Generate multiple files:", true);
+    this.muted("    npx scaffold make order crud-group -v module=ecommerce");
+
+    this.muted("  • Template injection:", true);
+    this.muted(
+      "    npx scaffold inject method-injection src/services/user.service.ts -r user"
+    );
+
+    this.muted("  • Injection with variables:", true);
+    this.muted(
+      "    npx scaffold inject import-statement src/app.module.ts -v module=auth feature=users"
+    );
+
+    this.muted("  • Force overwrite:", true);
+    this.muted(
+      "    npx scaffold make table controller -v module=restaurant --force"
+    );
   }
 }

@@ -10,7 +10,8 @@ export type Transformation =
   | "camelCase"
   | "pascalCase"
   | "snakeCase"
-  | "spaceCase";
+  | "spaceCase"
+  | "hyphenCase";
 
 export class Transform {
   static transform(transformation: string, value: string) {
@@ -54,7 +55,10 @@ export class Transform {
           transformedValue = this.toSnakeCase(transformedValue);
           break;
         case "spaceCase":
-          transformedValue = this.toSnakeCase(transformedValue);
+          transformedValue = this.toSpaceCase(transformedValue);
+          break;
+        case "hyphenCase":
+          transformedValue = this.toHyphenCase(transformedValue);
           break;
         default:
           break;
@@ -102,10 +106,14 @@ export class Transform {
   }
 
   static toSnakeCase(value: string) {
-    return this.toLowerCase(value).replace("-", "_");
+    return this.toLowerCase(value).replace(/-/g, "_");
   }
 
   static toSpaceCase(value: string) {
-    return this.toLowerCase(value).replace("-", " ");
+    return this.toLowerCase(value).replace(/-/g, " ");
+  }
+
+  static toHyphenCase(value: string) {
+    return this.toLowerCase(value).replace(/ /g, "-");
   }
 }

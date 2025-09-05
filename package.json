@@ -1,9 +1,10 @@
 {
-  "name": "@ebukaodini/scaffoldjs",
+  "name": "scaffoldjs",
   "version": "1.0.0",
   "description": "A CLI tool for scaffolding code templates",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "scripts": {
+    "clean": "rimraf build",
     "prepare": "npm run build",
     "build": "tsc && npm run copy:scaffolds",
     "postbuild": "chmod +x build/index.js",
@@ -22,10 +23,12 @@
   "keywords": [
     "scaffold",
     "scaffolder",
+    "scaffolding",
     "templates",
     "boilerplate",
     "boilerplates",
     "cli",
+    "file",
     "bootstrap",
     "automation",
     "generate",
@@ -33,7 +36,7 @@
     "nodejs",
     "low-code"
   ],
-  "author": "Ebuka Odini <ebukaodini@gmail.com>",
+  "author": "Ebuka Odini <ebukaodini@gmail.com> (https)",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.2",
@@ -45,6 +48,7 @@
     "commander": "^14.0.0",
     "concurrently": "^9.2.1",
     "prettier": "^3.2.5",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
