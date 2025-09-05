@@ -1,6 +1,6 @@
 /**
- * @fileoverview This file {{resource.raw}}.
- * @author John Doe
+ * @fileoverview This is a {{resource.raw}} scaffolded file.
+ * @author {{author.raw}}
  * @created 2025-09-04
  * @last_modified 2025-09-04
  */
