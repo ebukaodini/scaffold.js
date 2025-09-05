@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "templates": {
+    "controller": {
+      "description": "Create a controller file",
+      "src": "./scaffolds/controller.tp",
+      "dest": "./src/controllers/{{resource.singular.lowerCase}}.controller.ts"
+    },
+    "dto": {
+      "description": "Create a DTO file",
+      "src": "./scaffolds/dto.tp",
+      "dest": "./src/dtos/{{resource.singular.lowerCase}}.dto.ts"
+    },
+    "entity": {
+      "description": "Create an entity file",
+      "src": "./scaffolds/entity.tp",
+      "dest": "./src/entities/{{resource.singular.lowerCase}}.entity.ts"
+    },
+    "repo": {
+      "description": "Create a repo file",
+      "src": "./scaffolds/repo.tp",
+      "dest": "./src/repos/{{resource.singular.lowerCase}}.repo.ts"
+    },
+    "route": {
+      "description": "Create a route file",
+      "src": "./scaffolds/route.tp",
+      "dest": "./src/routes/{{resource.singular.lowerCase}}.route.ts"
+    },
+    "service": {
+      "description": "Create a service file",
+      "src": "./scaffolds/service.tp",
+      "dest": "./src/services/{{resource.singular.lowerCase}}.service.ts"
+    },
+    "test": {
+      "description": "Create a test file",
+      "src": "./scaffolds/test.tp",
+      "dest": "./src/__tests__/unit/{{resource.singular.lowerCase}}.test.ts"
+    },
+    "model": {
+      "description": "Inject a Prisma model into an existing schema.prisma file",
+      "src": "./scaffolds/prisma.model.tp",
+      "dest": "inject"
+    },
+    "author": {
+      "description": "Inject author and file metadata into an existing file",
+      "src": "./scaffolds/author.tp",
+      "dest": "inject"
+    },
+    "method": {
+      "description": "Inject a method template into an existing class",
+      "src": "./scaffolds/method.tp",
+      "dest": "inject"
+    },
+    "resources": ["entity", "dto", "repo", "controller", "route", "test"]
+  }
+}

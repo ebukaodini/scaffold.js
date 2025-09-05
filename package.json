@@ -1,14 +1,19 @@
 {
   "name": "@ebukaodini/scaffoldjs",
-  "version": "0.3.6",
-  "description": "Speed up coding with prebuilt and custom template files",
+  "version": "1.0.0",
+  "description": "A CLI tool for scaffolding code templates",
   "main": "src/index.js",
   "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc && npm run copy:scaffolds",
+    "postbuild": "chmod +x build/index.js",
+    "dev": "concurrently 'tsc -w' 'npm run copy:scaffolds'",
+    "copy:scaffolds": "mkdir -p build/scaffolds && cp -R src/scaffolds/. build/scaffolds/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --write --ignore-unknown ."
   },
   "bin": {
-    "scaffold": "src/index.js"
+    "scaffold": "build/index.js"
   },
   "repository": {
     "type": "git",
@@ -33,7 +38,14 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "pluralize": "^8.0.0",
-    "prettier": "^3.2.5",
     "yaml": "^2.3.2"
+  },
+  "devDependencies": {
+    "@types/pluralize": "^0.0.33",
+    "commander": "^14.0.0",
+    "concurrently": "^9.2.1",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
