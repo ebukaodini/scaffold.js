@@ -1,8 +1,13 @@
 name: Release and Publish to NPM
+
 on:
   push:
     branches:
       - main
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -11,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - name: Checkout repository
@@ -23,22 +28,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: "https://registry.npmjs.org"
+          registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
         run: |
-          npm cache clean --force
-          rm -rf node_modules package-lock.json  
-          npm install
+          npm ci
 
       - name: Lint
         run: npm run lint
 
       - name: Publish to npm
         id: publish_to_npm
-        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag latest --npm-token=${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --tag latest
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push changelog update
+        if: steps.publish_to_npm.outcome == 'success'
+        run: git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract version
         if: steps.publish_to_npm.outcome == 'success'
@@ -49,15 +58,42 @@ jobs:
         if: steps.publish_to_npm.outcome == 'success'
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: "v${{ steps.extract_version.outputs.version }}"
+          tag: v${{ steps.extract_version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create release
+      - name: Update Changelog
         if: steps.publish_to_npm.outcome == 'success'
-        uses: softprops/action-gh-release@v1
+        uses: stefanzweifel/changelog-updater-action@v1
         with:
-          tag_name: "v${{ steps.extract_version.outputs.version }}"
-          generate_release_notes: true
+          latest-version: v${{ steps.extract_version.outputs.version }}
+          release-notes: |
+            ## What's Changed
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.after }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit updated CHANGELOG
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: main
+          commit_message: Update CHANGELOG
+          file_pattern: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Create release
+      #   if: steps.publish_to_npm.outcome == 'success'
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: v${{ steps.extract_version.outputs.version }}
+      #     generate_release_notes: true
+      #     body: |
+      #       ## What's Changed
+      #       See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+
+      #       **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.after }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
