@@ -1,6 +1,6 @@
 # ScaffoldJS 🏗️
 
-[![npm version](https://badge.fury.io/js/@ebukaodini%2Fscaffoldjs.svg)](https://badge.fury.io/js/@ebukaodini%2Fscaffoldjs)
+[![npm version](https://badge.fury.io/js/scaffoldjs-cli.svg)](https://badge.fury.io/js/scaffoldjs-cli)
 ![build](https://img.shields.io/github/actions/workflow/status/ebukaodini/scaffold.js/publish.yml?branch=main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
