@@ -53,7 +53,7 @@ jobs:
         uses: requarks/changelog-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
+          tag: v${{ steps.extract_version.outputs.version }}
           # This writes the changelog to CHANGELOG.md
           writeToFile: true
 
