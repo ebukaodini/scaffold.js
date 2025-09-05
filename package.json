@@ -1,6 +1,6 @@
 {
-  "name": "scaffoldjs",
-  "version": "1.0.3",
+  "name": "scaffold.js",
+  "version": "1.0.0",
   "description": "A powerful CLI tool for scaffolding code templates with multi-variable support",
   "main": "build/index.js",
   "bin": {
