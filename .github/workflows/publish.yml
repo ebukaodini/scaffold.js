@@ -39,7 +39,7 @@ jobs:
 
       - name: Publish to npm
         id: publish_to_npm
-        run: npm publish --access public --tag latest
+        run: npm publish --access public --registry=https://registry.npmjs.org/ --tag latest --npm-token=${{ secrets.NPM_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
