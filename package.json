@@ -1,5 +1,5 @@
 {
-  "name": "scaffoldjs-cli",
+  "name": "@ebukaodini/scaffoldjs",
   "version": "1.0.0",
   "description": "A CLI tool for scaffolding code templates",
   "main": "build/index.js",
