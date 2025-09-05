@@ -80,7 +80,5 @@ jobs:
           body: |
             ## What's Changed
             See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
-
-            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.after }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,6 @@
 {
   "name": "scaffoldjs-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A powerful CLI tool for scaffolding code templates with multi-variable support",
   "main": "build/index.js",
   "bin": {
@@ -46,7 +46,7 @@
   "bugs": {
     "url": "https://github.com/ebukaodini/scaffold.s/issues"
   },
-  "homepage": "https://github.com/ebukaodini/scaffold.js#readme",
+  "homepage": "https://ebukaodini.github.io/scaffold.js",
   "dependencies": {
     "chalk": "^4.1.2",
     "pluralize": "^8.0.0",
