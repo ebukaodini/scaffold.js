@@ -5,13 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v1.1.0] - 2025-09-05
+## [v1.1.1] - 2025-09-05
 ### :wrench: Chores
-- [`75e83fb`](https://github.com/ebukaodini/scaffold.js/commit/75e83fbb371f5d81f9ffb23791b148d3847b20d6) - rename package from @ebukaodini/scaffoldjs to scaffoldjs for simplification *(commit by [@ebukaodini](https://github.com/ebukaodini))*
-- [`9004000`](https://github.com/ebukaodini/scaffold.js/commit/90040000ef3a10b8dbaba2fad29282953b0339af) - rename package to scaffold.js and downgrade version to 1.0.0 in package.json *(commit by [@ebukaodini](https://github.com/ebukaodini))*
-- [`70322cf`](https://github.com/ebukaodini/scaffold.js/commit/70322cfc656ba459f5c6329c171f9186cd4fec67) - rename package to scaffoldjs-cli in package.json and update installation instructions in README.md *(commit by [@ebukaodini](https://github.com/ebukaodini))*
-- [`2ceb277`](https://github.com/ebukaodini/scaffold.js/commit/2ceb2776965b953c4a1bd9d84a05f9a74e8e09ad) - bump package version to 1.1.0 in package.json and update npm badge in README.md *(commit by [@ebukaodini](https://github.com/ebukaodini))*
+- [`c51fe9f`](https://github.com/ebukaodini/scaffold.js/commit/c51fe9f38c4188db403c88039206e024e75330ec) - update package version to 1.1.1 and change homepage URL in package.json; rename package in package-lock.json *(commit by [@ebukaodini](https://github.com/ebukaodini))*
 
+
+## [v1.1.0] - 2025-09-05
+
+### :wrench: Chores
+
+- [`75e83fb`](https://github.com/ebukaodini/scaffold.js/commit/75e83fbb371f5d81f9ffb23791b148d3847b20d6) - rename package from @ebukaodini/scaffoldjs to scaffoldjs for simplification _(commit by [@ebukaodini](https://github.com/ebukaodini))_
+- [`9004000`](https://github.com/ebukaodini/scaffold.js/commit/90040000ef3a10b8dbaba2fad29282953b0339af) - rename package to scaffold.js and downgrade version to 1.0.0 in package.json _(commit by [@ebukaodini](https://github.com/ebukaodini))_
+- [`70322cf`](https://github.com/ebukaodini/scaffold.js/commit/70322cfc656ba459f5c6329c171f9186cd4fec67) - rename package to scaffoldjs-cli in package.json and update installation instructions in README.md _(commit by [@ebukaodini](https://github.com/ebukaodini))_
+- [`2ceb277`](https://github.com/ebukaodini/scaffold.js/commit/2ceb2776965b953c4a1bd9d84a05f9a74e8e09ad) - bump package version to 1.1.0 in package.json and update npm badge in README.md _(commit by [@ebukaodini](https://github.com/ebukaodini))_
 
 ## [v1.0.3] - 2025-09-05
 
@@ -46,3 +52,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [v1.0.3]: https://github.com/ebukaodini/scaffold.js/compare/v0.3.6...v1.0.3
 [v1.1.0]: https://github.com/ebukaodini/scaffold.js/compare/v1.0.3...v1.1.0
+[v1.1.1]: https://github.com/ebukaodini/scaffold.js/compare/v1.1.0...v1.1.1
